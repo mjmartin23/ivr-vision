@@ -71,9 +71,12 @@ for count = 1: n_iter
         figure(2);
         imshow(out);
     
-end   
-       
-    
+end
+
+% cleaning:       
+bw = im2bw(out);
+cleaned = bwareaopen(1-bw,20);
+figure(3),imshow(cleaned);
     
 
 end

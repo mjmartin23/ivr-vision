@@ -1,8 +1,9 @@
 N=40;
 Constant=12;
 
-    %inimage = imread(['02.jpg'],'jpg');
-    inimage = myjpgload('02.jpg',0);
+    inimage = imread(['simpler/02.jpg'],'jpg');
+    inimage = rgb2gray(inimage);
+    %inimage = myjpgload('02.jpg',0);
         
     [H,W] = size(inimage);
     outimage = zeros(H,W);
