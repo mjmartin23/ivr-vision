@@ -11,8 +11,8 @@ end
 oldcentres = centres;
 
 for count = 1: n_iter
-    disp(count);
-       centres{1:k};
+    %disp(count);
+     centres{1:k};
 
   for clustcount = 1:k_size
     c = centres{clustcount};
@@ -29,9 +29,9 @@ for count = 1: n_iter
     [mins,minArgs] = min(sums,[],3);
     
     ave = mode(mode(min(min(sums,3))));
-    for clustercount = 1:k_size;
+    for clustercount = 1:k_size
         is= find((minArgs == clustercount)==((mins < (window))));
-        size(is)
+        size(is);
         [is,js] = ind2sub(size(minArgs),is);
         ind = sub2ind(size(im(:,:,1)),is,js);
         
@@ -40,7 +40,7 @@ for count = 1: n_iter
         
         
         vec=[];
-        for ck = 1:k;
+        for ck = 1:k
             ims=im(:,:,ck);
             vec = [vec,ims(ind)];
         end
@@ -68,15 +68,15 @@ for count = 1: n_iter
 
                 end
        end
-        figure(2);
-        imshow(out);
+        %figure(2);
+        %imshow(out);
     
 end
 
 % cleaning:       
 bw = im2bw(out);
-cleaned = bwareaopen(1-bw,20);
-figure(3),imshow(cleaned);
+out = bwareaopen(1-bw,20);
+%figure(3),imshow(cleaned);
     
 
 end
