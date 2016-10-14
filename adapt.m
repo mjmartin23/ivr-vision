@@ -1,4 +1,5 @@
 function out = adapt(I,N,C)
+    % recommended N=50, C=12
     inimage = rgb2gray(I);
     [H,W] = size(inimage);
     out = zeros(H,W);
@@ -15,4 +16,8 @@ function out = adapt(I,N,C)
         end
       end
     end
+
+    bw = im2bw(out);
+    out = bwareaopen(bw,20);
+    figure(),imshow(out);
 end

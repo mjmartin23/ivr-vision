@@ -1,11 +1,18 @@
 function [out] = norm_rgb(I)
-    figure(1),imshow(I);
+    %imtool(I);
     red = double(I(:,:,1));
     green = double(I(:,:,2));
     blue = double(I(:,:,3));
     denom = red + green + blue;
     dub = double(I);
     normed = uint8(255.*(dub./denom));
+    
+%     [r,c,colors] = size(out);
+%     flat = reshape(out,[r*c,colors]);
+%     idx = kmeans(flat,3);
+%     idx = idx./3;
+%     mat = reshape(idx,[r,c]);
+%     imtool(mat);
     
     %imtool(normed);
     
@@ -28,7 +35,7 @@ function [out] = norm_rgb(I)
             end
         end
     end
-    
+    out = bwareaopen(out,20);
     figure(),imshow(out);
                 
 end

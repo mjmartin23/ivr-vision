@@ -68,15 +68,15 @@ for count = 1: n_iter
 
                 end
        end
-        %figure(2);
-        %imshow(out);
+        figure(2);
+        imshow(out);
     
 end
 
 % cleaning:       
 bw = im2bw(out);
 out = bwareaopen(1-bw,20);
-%figure(3),imshow(cleaned);
+figure(3),imshow(out);
     
 
 end

@@ -25,7 +25,7 @@ for i = 1:rows
     end
 end
 
-I=double(imread('harder/17.jpg'));
+I=double(imread('simpler/07.jpg'));
 out = zeros(rows,cols);
 for i = 1:rows
     for j = 1:cols
@@ -37,5 +37,5 @@ for i = 1:rows
         end
     end
 end
-out = bwareaopen(out,15);
+out = bwareaopen(out,20);
 figure(),imshow(out);
