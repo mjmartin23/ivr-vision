@@ -1,20 +1,26 @@
 % read in all images
 function out = median_filter(I,paths)
-    files = [];
+    
+    files = {};
     for k = 1:length(paths)
         path = paths{k};
-        files = cat(1,files,dir(strcat(path,'*.jpg')));
+        [~,attr] = fileattrib(strcat(path,'*.jpg'));
+        for file = attr
+            name = file.Name;
+            files{end + 1} = name;
+        end
     end
     [numFiles,~]=size(files);
     
-    oneFileToGetSize = files(1);
-    oneFileToGetSize = imread(strcat(oneFileToGetSize.folder,'/',oneFileToGetSize.name));
+    oneFileToGetSize = files{1};
+    oneFileToGetSize = imread(oneFileToGetSize);
     [rows,cols,colors]=size(oneFileToGetSize);
     
     pixelsOverTime = zeros(rows,cols,colors,numFiles);
     index = 1;
-    for file = files'
-        J = imread(strcat(file.folder,'/',file.name));
+    for k = 1:length(files)
+        file = files{k};
+        J = imread(file);
         for i = 1:rows
             for j = 1:cols
                 pixelsOverTime(i,j,:,index) = J(i,j,:);
