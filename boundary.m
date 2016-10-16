@@ -4,4 +4,5 @@ function [out,L] = boundary(I)
    
     [B,L] = bwboundaries(closed,'noholes');
     out = label2rgb(L,@jet,[.5 .5 .5]);
+    
 end
