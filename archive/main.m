@@ -1,5 +1,11 @@
 % file for running main script
 
+% workflow:
+% - train_median_filter : return medians
+% - 
+% -
+
+
 I = imread('simpler/05.jpg');
 
 % will need to find a way to programatically determine this
