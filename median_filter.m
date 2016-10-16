@@ -1,55 +1,27 @@
 % read in all images
-function out = median_filter(I,paths)
+function outs = median_filter(Is,medians)
     
-    files = {};
-    for k = 1:length(paths)
-        path = paths{k};
-        [~,attr] = fileattrib(strcat(path,'*.jpg'));
-        for file = attr
-            name = file.Name;
-            files{end + 1} = name;
+    layers = size(Is,2);
+    for count = 1:layers
+        if(iscell(Is))
+            I = Is{count};
+            b=false;
+        else
+            I =Is;
+            b=true;
         end
-    end
-    [numFiles,~]=size(files);
-    
-    oneFileToGetSize = files{1};
-    oneFileToGetSize = imread(oneFileToGetSize);
-    [rows,cols,colors]=size(oneFileToGetSize);
-    
-    pixelsOverTime = zeros(rows,cols,colors,numFiles);
-    index = 1;
-    for k = 1:length(files)
-        file = files{k};
-        J = imread(file);
-        for i = 1:rows
-            for j = 1:cols
-                pixelsOverTime(i,j,:,index) = J(i,j,:);
-            end
-        end
-        index = index + 1;
-    end
-    
-    medians = zeros(rows,cols,colors);
-    for i = 1:rows
-        for j = 1:cols
-            for k = 1:colors
-                medians(i,j,k) = median(pixelsOverTime(i,j,k,:));
-            end
-        end
-    end
+        [rows,cols,~]=size(I);
+        I=double(I);
+        out = zeros(rows,cols);
+        diff = sum(abs(medians-I),3);
+        out = diff>=50;
 
-    I=double(I);
-    out = zeros(rows,cols);
-    for i = 1:rows
-        for j = 1:cols
-            diff = sum(abs(medians(i,j,:)-I(i,j,:)));
-            if (diff < 50)
-                out(i,j) = 0;
-            else
-                out(i,j) = 1;
-            end
+        out = bwareaopen(out,20);
+        if(b)
+            outs = out;
+            break;
+        else
+            outs(:,:,count) = out;
         end
     end
-    
-    out = bwareaopen(out,20);
 end

@@ -1,4 +1,4 @@
-function out = boundary(I)
+function [out,L] = boundary(I)
     SE = strel('line',10,90);
     closed = imclose(I,SE);
    
