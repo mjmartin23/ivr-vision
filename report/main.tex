@@ -103,12 +103,28 @@ This was a fairly successful method, but still had its share of disadvantages. A
 
 This algorithm is meant to reduce background shadows as well by normalizing the intensity of a pixel color. It adjusts the $r,g,b$ values based on the following division:
 \[r=\frac{r}{r+g+b},\hspace{5mm}g=\frac{g}{r+g+b},\hspace{5mm}b=\frac{b}{r+g+b}.\]
+Then, a tight threshold can be created based on the now very similar background values. 
+
+RGB normalization has a lot of advantages. Like adaptive thresholding, it is effective at ignoring shadows in the background. It also runs very quickly since the normalization takes advantage of Matlab's efficiency in vectorized operations, and then requires only one pass over the pixels to threshold. It produces fairly consistently good results, rarely classifying background pixels as an object. However, it often misses a couple objects in each image, which is unpredictable and would be problematic for trying to get an accurate money total for all objects in the scene. See Figure \ref{fig:norm_rgb} for an image segmented by RGB normalization.
 
 \subsubsection{K-means clustering}
 
+We also tried using a K-means clustering algorithm to segment the background from the foreground. This algorithm is meant to cluster all of the background pixels into the same class and then cluster all of the objects into the same class.
+
+We saw limited success using this strategy, as it often fails to classify shadows in the background as part of the background. It is also fairly slow, as it has to run for several iterations before the clusters converge. See the results from this method in Figure \ref{fig:kmeans}.
+
 \subsubsection{Mean-shift segmentation}
 
+Mean-shift segmentation is a commonly recommended method for background subtraction, because, like adaptive thresholding, it localizes its segmentation to subsets of the pixels in the image. The algorithm searches for local maxima in the data and identifies that as an approximate for the background.
+
+The performance of this algorithm varies tremendously throughout different testing images. In some images, it separates out the background almost perfectly, while in other images (see Figure \ref{fig:mean_shift}) it localizes the maximum as a background shadow, and classifies the shadow as the background. It is also a time consuming algorithm. Ultimately, we could not reduce the inconsistency in performance.
+
 \subsubsection{Median filter thresholding}
+
+Median filter thresholding involves using the entire dataset of images for background segmentation. This algorithm calculates the median $r,g,b$ values for each pixel throughout all of the images in the set. Then we are able to compute a pixel-by-pixel threshold for the image being segmented. We knew that the median $r,g,b$ values would correspond to the background color for that pixel location, so we put a threshold on the sum of the absolute values of the differences between the median $r,g,b$ value at a pixel and the actual $r,g,b$ value at that pixel. Here is the threshold represented mathematically, for a single pixel and a threshold $T$:
+\[abs(r_{median}-r)+abs(g_{median}-g)+abs(b_{median}-b)<T\]
+
+This algorithm consistently performed very well. It ran fairly quickly, especially after taking advantage of Matlab's vector operation optimizations. It always classified background shadows as part of the background, and usually found most of each object. We decided to use this method for our background segmentation algorithm. See Figure \ref{fig:median} for a sample output image.
 
 \begin{figure}
 	
@@ -127,7 +143,7 @@ This algorithm is meant to reduce background shadows as well by normalizing the 
 		\label{fig:norm_rgb}
 	}
 	\subfloat[k-means classification] {
-		\includegraphics[width=0.5\linewidth]{placeholder}
+		\includegraphics[width=0.5\linewidth]{kmeans}
 		\label{fig:kmeans}
 	}
 	\hspace{0mm}
@@ -146,6 +162,28 @@ This algorithm is meant to reduce background shadows as well by normalizing the 
 \end{figure}
 
 \subsection{Object Detection}
+
+We tried a couple different methods for detecting each object from the segmented image. The success of these methods is largely dependent on how well the background is separated from the original image. We settled on detecting boundaries in the image as the most reliable method to recognise discrete objects in the segmented image.
+
+\subsubsection{K-means clustering}
+
+We attempted to use k-means clustering in order to separate out the different objects in the image. The idea was to have each cluster correspond to an object in the image. However, we realized that this would not be practical to use generally because the k-means algorithm requires the number of clusters as a parameter. Since we do not know how many objects are in each image before processing it, we do not have this information for the classifier.
+
+\subsubsection{Boundary detection}
+
+Boundary detection works extremely well to separate out each object. The only issue is that sometimes the background segmentation breaks up an object into a few pieces. We solved this problem by doing some pre-processing on the image before passing it to the boundary detector. The pre-processing algorithm is structured as follows:
+\begin{itemize}
+	\item For each pixel in the image:
+	\item If the pixel is white (part of an object), and the pixel that is 10 rows below it is also white, then connect the two pixels
+\end{itemize}
+This algorithm effectively joins up objects that are meant to be together, thus making it so they share a boundary. This image is then passed into a boundary detector, and then we return a logical matrix that is 3-dimensional: rows, columns, and a layer for each object in the image. See Figure \ref{bound} for the output of this process.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.8\linewidth]{boundary}
+	\label{bound}
+	\caption{Here is an image after background subtraction and boundary detection. Each color corresponds to a unique object as identified by its boundary.}
+\end{figure}
 
 \subsection{Classification}
 
