@@ -9,6 +9,7 @@ function [class,top3] = classify(v,N,Means,Invcors,Dim,Aprioris)
             IC = reshape(Invcors(i,:,:),Dim,Dim);
             evals(i) = multivariate(v,Means(i,:),IC,Aprioris(i));
         end
+        evals
         bestclasses = find(evals == max(evals));
         top3 = zeros(3,2);
         for i =1:3

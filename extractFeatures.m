@@ -13,7 +13,11 @@ function [ features ] = extractFeatures( im,segs )
                 rgb_mean = reshape(mean(mean(im(is,js,1:3),1),2),[1,3]);
                 %Calculating Compactness and Complex Moments
                 v =getproperties(segment);
-                features(i,:) = [rgb_mean,v];
+                %Calculating Further Features
+                rf=regionprops(segment,'MajorAxisLength','MinorAxisLength','Extent','Solidity');
+                boundaries = bwboundaries(segment);
+                features(i,:) = [rgb_mean,rf.MajorAxisLength,rf.MinorAxisLength,rf.Extent,rf.Solidity,v];
+
             end
 end
 

@@ -16,7 +16,7 @@ function outs = median_filter(Is,medians)
         diff = sum(abs(medians-I),3);
         out = diff>=50;
 
-        out = bwareaopen(out,20);
+        out = bwareaopen(out,25);
         if(b)
             outs = out;
             break;

@@ -7,7 +7,11 @@ function [ y ] = labeler( im,segs )
         k=10;
         [is,js] = find(segs(:,:,i));
         subimage = im(max((min(is)-k),1): min((max(is)+k),size(im,1)),max((min(js)-k),1):min((max(js)+k),size(im,2)),1:3);
-        if (size(subimage,1)<0)
+        if (size(subimage,1)>0)
+            I = segs(:,:,i);
+            corners = detectFASTFeatures(I,'MinContrast',0.1);
+            J = insertMarker(I,corners,'circle');
+            figure();imshow(J);
         figure(1);imshow(subimage);
         y(i) = input('Which object is this? ');
         else

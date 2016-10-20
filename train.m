@@ -1,4 +1,4 @@
-function [ Means,Invcors,Aprioris ] = train( trainData,num_labels )
+function [ Means,Invcors,Aprioris ] = train( trainData,num_labels,v )
 %UNTITLED3 Summary of this function goes here
 %   Detailed explanatiogin goes here
 
@@ -9,7 +9,7 @@ function [ Means,Invcors,Aprioris ] = train( trainData,num_labels )
     disp('Building Model from training data...');
     [X,y] = reformat(trainData);
     
-    [Means,Invcors,Aprioris] = buildmodel(size(X,2),X,size(X,1),num_labels,y);
+    [Means,Invcors,Aprioris] = buildmodel(size(X(:,v),2),X(:,v),size(X(:,v),1),num_labels,y);
 
 end
 
