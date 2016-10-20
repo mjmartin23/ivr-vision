@@ -35,7 +35,7 @@ function [out] = norm_rgb(I)
             end
         end
     end
-    out = bwareaopen(out,20);
+    %out = bwareaopen(out,20);
     figure(),imshow(out);
                 
 end

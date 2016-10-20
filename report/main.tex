@@ -6,9 +6,16 @@
 
 \usepackage{amssymb,amsmath,textcomp} %These are optional packages you can install which gives you more mathematical symbols to play with
 
-\usepackage{graphicx} %This allows you to insert jpg, png and pdf files into the document
+\usepackage{graphicx,subfig,enumerate} 
 \graphicspath{{img/}}
-\usepackage{enumerate}
+
+
+%%%%%%%%%%%%%%%%%
+% CUSTOM COMMANDS
+
+
+
+%%%%%%%%%%%%%%%%%
 
 
 \title{Introduction to Vision and Robotics\\Vision Practical: Coin Counter}
@@ -48,12 +55,12 @@
 
 The purpose of this practical is to develop a program in Matlab that recognises and classifies several objects in an image. These objects can be coins or other small items, and the program must segment the image, identify each of the objects, and output the total value (in pounds and pence) of the objects in the image.
 
-All of the images are taken from a downward facing camera viewing a scene containing the objects on a static background. We were provided with a set of 14 sample images on which to train our classifier (see Figure \ref{samplescene} for an example).
+All of the images are taken from a downward facing camera viewing a scene containing the objects on a static background. We were provided with a set of 14 sample images on which to train our classifier (see Figure \ref{fig:samplescene} for an example).
 
 \begin{figure}
 	\centering
 	\includegraphics[width=0.75\linewidth]{02}
-	\label{samplescene}
+	\label{fig:samplescene}
 	\caption{This is one of the test images given to train the classifier.}
 \end{figure}
 
@@ -73,6 +80,70 @@ We approached this problem by dividing it into three distinct stages: background
 \section{Methods}
 
 \subsection{Background Segmentation}
+
+Creating a reliable algorithm that would clearly segment the background from the objects of interest in the image was the most time-consuming and challenging section of this project. We tried several different methods of background segmentation, to varying degrees of success. We ended up choosing median filter thresholding as our most successful method.
+
+\subsubsection{Naive thresholding}
+
+Our algorithm for creating a naive threshold can be described by the following steps:
+\begin{enumerate}
+	\item Attain the median values for each of the three color channels, $r,g,b$ in the given image
+	\item For each pixel, if that pixel's color values are $\pm20$ from the median, label it as a background pixel. Else, label it as an object of interest.
+\end{enumerate}
+
+This method has a few advantages. It is fast, as it only requires two passes over the entire image, and there are no computationally expensive operations inside of the loop. It is simple and easy to understand. However, this method fails to accommodate for shadows in the background. It also needs to be tuned specifically to the image (the range of $\pm20$ from the medians was chosen by trial and error). Even after careful tuning, this algorithm still miss-classifies some pixels. See Figure \ref{fig:naive} for an example of the output of this method.
+
+\subsubsection{Adaptive thresholding}
+
+Adaptive thresholding, as opposed to naive thresholding, generates a unique threshold value for a set of sub-images inside the given image. This is meant to allow for shadows to fall on the background and still be classified as background since, the threshold is a more localized value.
+
+This was a fairly successful method, but still had its share of disadvantages. Adaptive thresholding highlighted the edges around some of the objects rather than the objects themselves, but for others, identified the body of the object correctly. This inconsistency would cause problems when trying to classify the object. However, we never had any problems with background shadows when using this method. See the results in Figure \ref{fig:adapt}.
+
+\subsubsection{RGB normalization}
+
+This algorithm is meant to reduce background shadows as well by normalizing the intensity of a pixel color. It adjusts the $r,g,b$ values based on the following division:
+\[r=\frac{r}{r+g+b},\hspace{5mm}g=\frac{g}{r+g+b},\hspace{5mm}b=\frac{b}{r+g+b}.\]
+
+\subsubsection{K-means clustering}
+
+\subsubsection{Mean-shift segmentation}
+
+\subsubsection{Median filter thresholding}
+
+\begin{figure}
+	
+	\centering
+	\subfloat[naive thresholding] {
+		\includegraphics[width=0.5\linewidth]{naive}
+		\label{fig:naive}
+	}
+	\subfloat[adaptive thresholding] {
+		\includegraphics[width=0.5\linewidth]{adapt}
+		\label{fig:adapt}
+	}
+	\hspace{0mm}
+	\subfloat[RGB normalization] {
+		\includegraphics[width=0.5\linewidth]{norm_rgb}
+		\label{fig:norm_rgb}
+	}
+	\subfloat[k-means classification] {
+		\includegraphics[width=0.5\linewidth]{placeholder}
+		\label{fig:kmeans}
+	}
+	\hspace{0mm}
+	\subfloat[mean-shift segmentation] {
+		\includegraphics[width=0.5\linewidth]{mean_shift2}
+		\label{fig:mean_shift}
+	}
+	\subfloat[median filter thresholding] {
+		\includegraphics[width=0.5\linewidth]{median1}
+		\label{fig:median}
+	}
+	
+	\label{fig:bgseg}
+	\caption{Here are the output images for the six methods of background segmentation that we tried.}
+	
+\end{figure}
 
 \subsection{Object Detection}
 
