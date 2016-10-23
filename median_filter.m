@@ -13,7 +13,7 @@ function outs = median_filter(Is,medians)
         [rows,cols,~]=size(I);
         I=double(I);
         out = zeros(rows,cols);
-        diff = sum(abs(medians-I),3);
+        diff = sum(abs(medians(1:rows,1:cols,:)-I),3);
         out = diff>=50;
 
         out = bwareaopen(out,25);
