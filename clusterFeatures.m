@@ -13,7 +13,7 @@ function [ clusters ] = clusterFeatures( surf,fast,labels )
             clusters.fast{i} =[];
             for j = is
                 clusters.surf{i} = cat(1,clusters.surf{i},surf{j});
-                clusters.fast{i} = cat(1,clusters.fast{i},fast{j});
+                clusters.fast{i} = cat(2,clusters.fast{i},fast{j});
             end
              clusters.surf{i} = mean( clusters.surf{i},3); 
         end

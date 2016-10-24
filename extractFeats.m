@@ -25,9 +25,8 @@ function [ features] = extractFeats(segs,medians )
                 SURF_points = detectSURFFeatures(grey_segment);
                 features.SURF_features{i} = extractFeatures(grey_segment,SURF_points.selectStrongest(10));
                 
-                FAST_points = detectFASTFeatures(grey_segment);
-                fets = extractFeatures(grey_segment,FAST_points.selectStrongest(10));
-                features.FAST_features{i} = fets.Features;
+                FAST_points = extractHOGFeatures(grey_segment);
+                features.FAST_features{i} = FAST_points;
                                 %Calculating Further Features
                 rf=regionprops(bin_segment,'MajorAxisLength','MinorAxisLength','Extent','Solidity');
                 try
