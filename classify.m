@@ -27,9 +27,10 @@ function [class,top3] = classify(v,N,Means,Invcors,Dim,Aprioris,feats,clusters,v
             f = cell2mat(feats.fast);
             fpen =0;
             if(size(f,1)~=0)
-            for j = 1:size(f,1)
-                
-                fpen =fpen +min(sum(bsxfun(@minus,fastC,f(j,:)).^2));
+            for j = 1:size(f,1)  
+                size(fastC)
+                size(f(j))
+                fpen =fpen +min(sum(bsxfun(@minus,fastC,f(j)).^2));
             end
             end
             fpens(i) =fpen;
@@ -40,9 +41,9 @@ function [class,top3] = classify(v,N,Means,Invcors,Dim,Aprioris,feats,clusters,v
         sprobs = ones(N,1)-(spens/sum(spens));
         evals = prod(evals,2);
         if( sum(spens)~=0)    
-        evals = (evals.*sprobs);
+        evals = (evals.*fprobs);
         end
-        evals = evals/sum(evals);
+        evals = evals/sum(evals)
         
         [~,bestclasses] = max(evals);
         top3 = zeros(3,2);
