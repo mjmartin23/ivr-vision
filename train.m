@@ -1,4 +1,4 @@
-function [ Means,Invcors,Aprioris ] = train( trainData,v )
+function [ Means,Invcors,Aprioris ] = train( trainData,V )
 %UNTITLED3 Summary of this function goes here
 %   Detailed explanatiogin goes here
 
@@ -13,7 +13,16 @@ function [ Means,Invcors,Aprioris ] = train( trainData,v )
     for i =1:size(y,1)
         n(i)=find(cellfun('length',regexp(uni,y{i})) == 1);
     end
-    [Means,Invcors,Aprioris] = buildmodel(size(X(:,v),2),X(:,v),size(X(:,v),1),num_labels,n);
-
+    size(V,2)
+    Means = cell(size(V,1),size(V,2));
+    Invcors=cell(size(V,1),size(V,2));
+    Aprioris=cell(size(V,1),size(V,2));
+    for i = 1:size(V,2) 
+        v=V{i};
+    [Mean,Invcor,Apriori] = buildmodel(size(X(:,v),2),X(:,v),size(X(:,v),1),num_labels,n);
+    Means{i} = Mean;
+    Invcors{i} = Invcor;
+    Aprioris{i} = Apriori;
+    end
 end
 

@@ -10,8 +10,14 @@ function [ features] = extractFeats(segs,medians )
                 %Getting indices of object from binary segment matrix segs
                 segment = segs{i};
                 bin_segment = median_filter(segment,medians);
-                grey_segment = rgb2gray(segment);
+               
                 %Calculating RGB means
+                segment = double(segment);
+                for k = 1: size(segment,3)
+                segment(:,:,k) = (segment(:,:,k)).*bin_segment; 
+                end
+%                 imshow(uint8(segment));
+                grey_segment = rgb2gray(segment);
                 rgb_mean = reshape(mean(mean(segment,1),2),[1,3]);
                 %Calculating Compactness and Complex Moments
                 complex_features =getproperties(bin_segment);
@@ -19,8 +25,9 @@ function [ features] = extractFeats(segs,medians )
                 SURF_points = detectSURFFeatures(grey_segment);
                 features.SURF_features{i} = extractFeatures(grey_segment,SURF_points.selectStrongest(10));
                 
-                FAST_points = detectSURFFeatures(grey_segment);
-                features.FAST_features{i} = extractFeatures(grey_segment,FAST_points.selectStrongest(10));
+                FAST_points = detectFASTFeatures(grey_segment);
+                fets = extractFeatures(grey_segment,FAST_points.selectStrongest(10));
+                features.FAST_features{i} = fets.Features;
                                 %Calculating Further Features
                 rf=regionprops(bin_segment,'MajorAxisLength','MinorAxisLength','Extent','Solidity');
                 try
