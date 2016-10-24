@@ -14,7 +14,7 @@ function [ trainData,valData,testData] = getData( paths,medians )
         
         classes =classes';
         
-        [trainInd,valInd,testInd] = dividerand(size(X,1),0.5,0.25,0.25);
+        [trainInd,valInd,testInd] = dividerand(size(X,1),0.75,0,0.25);
         
         trainedClusters=clusterFeatures(surf(trainInd),fast(trainInd),classes(trainInd));
         
