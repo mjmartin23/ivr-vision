@@ -10,14 +10,20 @@ function labeled = go(pathsToImages,display)
     [images,~] = pullFiles(pathsToImages);
     
     % generate medians for median filter
-    medians = train_median_filter(images);
+    medians = train_median_filter(pathsToImages);
     
+    % get binary segments for each object in each image
+    allSegments = preproccess(images,medians,display);
+        
     % for each image I in segments, classify the objects in it
-    for index = 1 : length(images)
+    for index = 1 : length(allSegments)
+        
+        segments = allSegments{index};
         I = images{index};
+        subImages = getColSegs(I,segments);
         
         % extract features for image I
-        features = extractFeats(I,medians,display);
+        features = extractFeats(subImages,medians);
         
         X=features.normal_features;
         surf = features.SURF_features;

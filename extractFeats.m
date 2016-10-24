@@ -28,21 +28,19 @@ function [ features] = extractFeats(segs,medians )
                 FAST_points = extractHOGFeatures(grey_segment);
                 features.FAST_features{i} = FAST_points;
                                 %Calculating Further Features
-                rf=regionprops(bin_segment,'MajorAxisLength','MinorAxisLength','Extent','Solidity');
-                try
-                [ma1,ma2]= rf.MajorAxisLength;
-                [mi1,mi2]=rf.MinorAxisLength;
-
-                catch
-                    ma1 = rf.MajorAxisLength;
-                    ma2=0;
-                    mi1=rf.MinorAxisLength;
-                    mi2=0;
-                end
+%                 rf=regionprops(bin_segment,'MajorAxisLength','MinorAxisLength','Extent','Solidity');
+%                 try
+%                 [ma1,ma2]= rf.MajorAxisLength;
+%                 [mi1,mi2]=rf.MinorAxisLength;
+% 
+%                 catch
+%                     ma1 = rf.MajorAxisLength;
+%                     ma2=0;
+%                     mi1=rf.MinorAxisLength;
+%                     mi2=0;
+%                 end
                 
-                rf.Extent;
-                rf.Solidity;
-                features.normal_features(i,:) = [rgb_mean,[ma1,ma2],[mi1,mi2],complex_features];
+                features.normal_features(i,:) = [rgb_mean,complex_features];
                 
             end
             

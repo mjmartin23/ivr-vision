@@ -1,4 +1,4 @@
-function [ segments ] = preproccess( images,medians )
+function [ segments ] = preproccess( images,medians,display )
 %UNTITLED3 Summary of this function goes here
 %   Detailed explanation goes here
         
@@ -10,7 +10,11 @@ function [ segments ] = preproccess( images,medians )
     
         for i = 1:num
             fprintf('Segmenting image %d of %d\n',i,num);
-            figure(2);imshow(out(:,:,i))
+            if display > 0
+                figure(1);imshow(out(:,:,i));
+                title('background segmented');
+                input('hit enter to continue...')
+            end
             %Segment and label objects
             [~,lbled]=boundary(out(:,:,i));
             %Split labelled objects. Each layer is a binary image matrix
