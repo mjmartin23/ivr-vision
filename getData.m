@@ -1,4 +1,4 @@
-function [ trainData,valData,testData] = getData( paths,medians )
+function [ trainData,valData,testData] = getData( paths,v,medians )
 %UNTITLED2 Summary of this function goes here
 %   Detailed explanation goes here
         
@@ -14,7 +14,7 @@ function [ trainData,valData,testData] = getData( paths,medians )
         
         classes =classes';
         
-        [trainInd,valInd,testInd] = dividerand(size(X,1),0.75,0,0.25);
+        [trainInd,valInd,testInd] = dividerand(size(X,1),v(1),v(2),v(3));
         
         trainedClusters=clusterFeatures(surf(trainInd),fast(trainInd),classes(trainInd));
         
