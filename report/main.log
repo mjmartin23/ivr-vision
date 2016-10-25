@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2016.6.19)  24 OCT 2016 21:11
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2016.6.19)  25 OCT 2016 14:38
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -407,13 +407,6 @@ Overfull \hbox (15.6665pt too wide) in paragraph at lines 135--158
  [][] 
  []
 
-
-Package caption Warning: \label without proper reference on input line 184.
-See the caption package documentation for explanation.
-
-
-LaTeX Warning: Reference `bound' on page 5 undefined on input line 179.
-
 [5] [6 <./img/naive.png (PNG copy)> <./img/adapt.png (PNG copy)> <./img/norm_rg
 b.png (PNG copy)> <./img/kmeans.png (PNG copy)> <./img/mean_shift2.png (PNG cop
 y)> <./img/median1.png (PNG copy)>]
@@ -423,16 +416,22 @@ File: img/boundary.png Graphic file (type png)
 Package pdftex.def Info: img/boundary.png used on input line 183.
 (pdftex.def)             Requested size: 312.00119pt x 215.68173pt.
 
-[7 <./img/boundary.png (PNG copy)>] [8] (./main.aux)
+[7 <./img/boundary.png (PNG copy)>]
+<img/subimage.jpg, id=41, 48.18pt x 48.18pt>
+File: img/subimage.jpg Graphic file (type jpg)
+ <use img/subimage.jpg>
+Package pdftex.def Info: img/subimage.jpg used on input line 209.
+(pdftex.def)             Requested size: 195.0pt x 195.03224pt.
+ [8 <./img/subimage.jpg>] [9] (./main.aux)
 
 LaTeX Warning: There were undefined references.
 
  ) 
 Here is how much of TeX's memory you used:
- 4136 strings out of 494953
- 61156 string characters out of 6180977
- 116598 words of memory out of 5000000
- 7363 multiletter control sequences out of 15000+600000
+ 4142 strings out of 494953
+ 61270 string characters out of 6180977
+ 116579 words of memory out of 5000000
+ 7368 multiletter control sequences out of 15000+600000
  12909 words of font info for 50 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  44i,9n,49p,677b,360s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -445,10 +444,10 @@ onts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/ty
 pe1/public/amsfonts/cm/cmr17.pfb></usr/share/texlive/texmf-dist/fonts/type1/pub
 lic/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/am
 sfonts/cm/cmtt12.pfb>
-Output written on main.pdf (8 pages, 208688 bytes).
+Output written on main.pdf (9 pages, 209504 bytes).
 PDF statistics:
- 76 PDF objects out of 1000 (max. 8388607)
- 48 compressed objects within 1 object stream
+ 80 PDF objects out of 1000 (max. 8388607)
+ 50 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 41 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 46 words of extra memory for PDF output out of 10000 (max. 10000000)
 
