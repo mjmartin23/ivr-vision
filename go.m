@@ -6,7 +6,7 @@ function labeled = go(pathsToImages,display)
     % labeled      : array of all images from pathsToImages, with visual
     %                labels for each object in the image superimposed
     
-    [Means,Invcors,Aprioris,clusters] = train();
+    [Means,Invcors,Aprioris,clusters,classNames] = train();
 
     % retrieve image from pathToImages
     [images,~] = pullFiles(pathsToImages);
@@ -21,13 +21,43 @@ function labeled = go(pathsToImages,display)
     for index = 1 : length(allSegments)
         
         segments = allSegments{index};
+
+        
         I = images{index};
         subImages = getColSegs(I,segments);
         
         % extract features for image I
-        features = extractFeats(subImages,medians);
-        
+        [features,empties] = extractFeats(subImages,medians);
+        subImages(empties) = [];
         count = goClassify(features,10,Means,Invcors,Aprioris,clusters,{[1:3],[4,5]});
+        
+
+        % for subimage i, row i of count says which class it is
+        figure();
+        num = size(subImages,2);
+        sizesp = ceil(sqrt(num));
+        if display > 0
+        for i = 1:num
+           class = ['class: ',classNames{find(count(i,:))}];
+           subplot(sizesp,sizesp,i),subimage(subImages{i});
+           title(class);
+        end
+        end
+        
+        moneyVec = [0,2,50,5,0,100,20,200,25,75];
+        totalMoneyPence = sum(count,1)*moneyVec';
+        %subplot(sizesp,sizesp+1,sizesp*(sizesp+1)),subimage(I);
+        moneyString = strcat('Total pounds in image: £ ', string(totalMoneyPence/100.0));
+        if display > 0
+        annotation('textbox', [0 0.9 1 0.1], ...
+            'String', moneyString, ...
+            'EdgeColor', 'none', ...
+            'HorizontalAlignment', 'center')
+        
+        pause();  
+        end
+        
+        disp(moneyString);
                 
         fprintf('got features for image %d\n',index);
         

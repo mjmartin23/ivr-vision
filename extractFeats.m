@@ -1,16 +1,23 @@
-function [ features] = extractFeats(segs,medians )
+function [ features, empties] = extractFeats(segs,medians )
 %UNTITLED2 Summary of this function goes here
 %   Detailed explanation goes here
     %Takes the original colored image and MxNxK 3D Binary Matrix with the
     %segmented objects. Returns Kx10 matrix containing feature vectors of each object. 
             num = size(segs,2);
-            SURF_features = cell(num,1);
-            FAST_features = cell(num,1);
+            em=0;
+            empties =[];
             for i = 1: num
                 %Getting indices of object from binary segment matrix segs
+
                 segment = segs{i};
-                bin_segment = median_filter(segment,medians);
-               
+                bin_segment = median_filter(segment,medians); 
+                if(numel(find(bin_segment))<20)
+                    segs(i)=[];
+                    empties(end+1) = (i+em);
+                    em=em+1;
+                    i=i-1;
+                    continue
+                end
                 %Calculating RGB means
                 segment = double(segment);
                 for k = 1: size(segment,3)

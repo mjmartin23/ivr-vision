@@ -1,4 +1,4 @@
-function [ Means,Invcors,Aprioris,clusters ] = train()
+function [ Means,Invcors,Aprioris,clusters,uni ] = train()
 %UNTITLED3 Summary of this function goes here
 %   Detailed explanatiogin goes here
 
@@ -7,7 +7,7 @@ function [ Means,Invcors,Aprioris,clusters ] = train()
     %Extract Mean vector, Invcors Matrix and priori probabilties from
     %features.
     impaths = {'medianTrain/'};
-    segpaths = {'training/AAA/','training/one_pound/','training/two_pound/','training/five_pence/','training/twenty_pence/','training/fifty_pence/','training/washer_sml_hole/','training/washer_lg_hole/','training/nut/','training/angle_bracket/'};
+    segpaths = {'training/AAA/','training/onepound/','training/twopound/','training/fivepence/','training/twentypence/','training/fiftypence/','training/washersmlhole/','training/washerlghole/','training/nut/','training/anglebracket/'};
     m = initializeModel(impaths);
     [trainData,~,~] = getData(segpaths,[1,0,0],m);
     clusters = trainData.clusters;

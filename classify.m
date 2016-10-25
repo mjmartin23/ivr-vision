@@ -41,7 +41,7 @@ function [class,top3] = classify(v,N,Means,Invcors,Dim,Aprioris,feats,clusters,v
         if( sum(spens)~=0)    
         evals = (evals.*sprobs);
         end
-        evals = evals/sum(evals);
+        evals = evals/sum(evals)
         
         [~,bestclasses] = max(evals);
         top3 = zeros(3,2);
