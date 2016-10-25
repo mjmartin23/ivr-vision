@@ -176,20 +176,42 @@ Boundary detection works extremely well to separate out each object. The only is
 	\item For each pixel in the image:
 	\item If the pixel is white (part of an object), and the pixel that is 10 rows below it is also white, then connect the two pixels
 \end{itemize}
-This algorithm effectively joins up objects that are meant to be together, thus making it so they share a boundary. This image is then passed into a boundary detector, and then we return a logical matrix that is 3-dimensional: rows, columns, and a layer for each object in the image. See Figure \ref{bound} for the output of this process.
+This algorithm effectively joins up objects that are meant to be together, thus making it so they share a boundary. This image is then passed into a boundary detector, and then we return a logical matrix that is 3-dimensional: rows, columns, and a layer for each object in the image. See Figure \ref{fig:bound} for the output of this process.
 
 \begin{figure}
 	\centering
 	\includegraphics[width=0.8\linewidth]{boundary}
-	\label{bound}
 	\caption{Here is an image after background subtraction and boundary detection. Each color corresponds to a unique object as identified by its boundary.}
+	\label{fig:bound}
 \end{figure}
 
 \subsection{Classification}
 
+The classification process for 
+
 \subsubsection{Feature selection}
 
-\subsubsection{Classifier}
+Feature selection is an extremely important stage of the classification. Choosing features that allow the classifier to make clear distinctions between different objects in the image is essential to the success of the classifier. We chose to extract the following features from each object in the image for our classifier:
+
+\begin{itemize}
+	\item Mean $r,g,b$ values
+	\item 1 complex moment
+	\item SURF features
+	\item Compactness
+\end{itemize}
+
+These features were calculated given a subimage of the overall image that contains only the object of interest. See Figure \ref{fig:5pencesub} for an example of a 5 pence piece that would be analyzed for these features.
+
+The process of deciding to use this feature set relied on trial and error. We attempted several other combinations as well, but achieved worse results as compared to the accuracy of these features. We tried to use simply mean $r,g,b$ values and 6 complex moments. In this instance, the extra several complex moments did not seem to improve performance, so we eliminated them. We tried adding in major axis length and minor axis length, however, this was only useful in separating out the batteries and angle brackets, which were already being classified fairly accurately.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.5\linewidth]{subimage}
+	\caption{A five pence piece extracted from a training image.}
+	\label{fig:5pencesub}
+\end{figure}
+
+\subsubsection{Classifier training}
 
 \section{Results}
 
@@ -199,10 +221,7 @@ This algorithm effectively joins up objects that are meant to be together, thus 
 
 \begin{verbatim}
 	
-	code can go inside these tags 
-	\begin{verbatim} 
-	.... 
-	\ end{verbatim} (no space though)
+	code can go here
 	
 \end{verbatim}
 

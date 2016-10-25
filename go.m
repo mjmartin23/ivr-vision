@@ -5,6 +5,8 @@ function labeled = go(pathsToImages,display)
     % display      : if 1 will display labeled images as they are processed
     % labeled      : array of all images from pathsToImages, with visual
     %                labels for each object in the image superimposed
+    
+    [Means,Invcors,Aprioris,clusters] = train();
 
     % retrieve image from pathToImages
     [images,~] = pullFiles(pathsToImages);
@@ -25,9 +27,9 @@ function labeled = go(pathsToImages,display)
         % extract features for image I
         features = extractFeats(subImages,medians);
         
-        X=features.normal_features;
-        surf = features.SURF_features;
-        fast = features.FAST_features;
+        count = goClassify(features,10,Means,Invcors,Aprioris,clusters,{[1:3],[4,5]});
+                
+        fprintf('got features for image %d\n',index);
         
     end
     

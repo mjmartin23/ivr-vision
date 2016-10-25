@@ -10,10 +10,12 @@ function [ segments ] = preproccess( images,medians,display )
     
         for i = 1:num
             fprintf('Segmenting image %d of %d\n',i,num);
+            if nargin > 2
             if display > 0
                 figure(1);imshow(out(:,:,i));
                 title('background segmented');
                 input('hit enter to continue...')
+            end
             end
             %Segment and label objects
             [~,lbled]=boundary(out(:,:,i));
