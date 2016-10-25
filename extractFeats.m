@@ -4,8 +4,6 @@ function [ features] = extractFeats(segs,medians )
     %Takes the original colored image and MxNxK 3D Binary Matrix with the
     %segmented objects. Returns Kx10 matrix containing feature vectors of each object. 
             num = size(segs,2);
-            SURF_features = cell(num,1);
-            FAST_features = cell(num,1);
             for i = 1: num
                 %Getting indices of object from binary segment matrix segs
                 segment = segs{i};

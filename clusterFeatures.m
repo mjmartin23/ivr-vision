@@ -6,7 +6,6 @@ function [ clusters ] = clusterFeatures( surf,fast,labels )
     for i =1:size(labels)
         y(i)=find(cellfun('length',regexp(uni,labels{i})) == 1);
     end
-        size(uni,1)
         for i = 1 : size(uni,1)
             is = y==i;
             clusters.surf{i} =[];

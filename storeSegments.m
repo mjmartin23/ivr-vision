@@ -14,7 +14,6 @@ function [  ] = storeSegments( ims,segments )
         if (size(subimage,1)>0)
             imwrite(subimage,(sprintf('unlabelledObjects/img_%d_object_%d.jpg',c,i)));
  
-        figure(1);imshow(subimage);
         end
     end
     end
