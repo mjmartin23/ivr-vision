@@ -4,6 +4,11 @@ function [ features, empties] = extractFeats(segs,medians )
     %Takes the original colored image and MxNxK 3D Binary Matrix with the
     %segmented objects. Returns Kx10 matrix containing feature vectors of each object. 
             num = size(segs,2);
+
+            
+            
+
+
             em=0;
             empties =[];
             for i = 1: num

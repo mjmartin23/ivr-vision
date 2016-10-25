@@ -9,7 +9,7 @@ function [medians] = initializeModel( paths )
     disp('Calculating medians from training images...')
     medians = train_median_filter(paths);
     
-    segments = preproccess(images,medians);
+    segments = preproccess(images,medians,0);
     
     disp('Storing object pictures to be labelled...');
     storeSegments(images,segments)
