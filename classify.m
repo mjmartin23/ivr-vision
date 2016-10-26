@@ -38,17 +38,29 @@ function [class,top3] = classify(v,N,Means,Invcors,Dim,Aprioris,feats,clusters,v
         fprobs = ones(N,1)-(fpens/sum(fpens));
         sprobs = ones(N,1)-(spens/sum(spens));
         evals = prod(evals,2);
-        if( sum(spens)~=0)    
-        evals = (evals.*sprobs);
+%         [~,in3] = max(evals)
+
+        evals = evals./Aprioris{1}'.^(numel(Aprioris)-1);
+%         [~,in] = max(fprobs)
+%         [~,in2] = max(sprobs)
+%         [~,in3] = max(evals)
+
+        if( sum(spens==0)~=0 &&  sum(fpens==0)~=0 )    
+        evals = (evals.*sprobs.*fprobs);
         end
-        evals = evals/sum(evals);
+
         
-        [~,bestclasses] = max(evals);
+        evals = evals/sum(evals);
+       
+        [p,bestclasses] = max(evals);
+        if(p<0.5)
+            bestclasses=11;
+        end
         top3 = zeros(3,2);
-        %for i =1:3
-%             
-%             [j,k] = max(evals)
-%             top3(i,:) = [j,k]
-%             evals = evals([1:k-1,k+1:end],:);
-        %end
+        for i =1:3           
+            [j,k] = max(evals);
+            top3(i,:) = [j,k];
+            evals(k,:) = 0;
+        end
+        top3
         class = bestclasses;

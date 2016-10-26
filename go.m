@@ -45,6 +45,7 @@ function labeled = go(pathsToImages,display)
         end
         num = size(subImages,2);
         sizesp = ceil(sqrt(num));
+        classNames{end+1}='NotSure';
         if display > 0
             for i = 1:num
                class = ['class: ',classNames{find(count(i,:))}];
@@ -53,7 +54,7 @@ function labeled = go(pathsToImages,display)
             end
         end
         
-        moneyVec = [0,2,50,5,0,100,20,200,25,75];
+        moneyVec = [0,2,50,5,0,100,20,200,25,75,0];
         totalMoneyPence = sum(count,1)*moneyVec';
         %subplot(sizesp,sizesp+1,sizesp*(sizesp+1)),subimage(I);
         moneyString = strcat('Total money in image ',num2str(index),': £ ', string(totalMoneyPence/100.0));

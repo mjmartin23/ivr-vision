@@ -1,4 +1,4 @@
-function [medians] = initializeModel( paths )
+function [medians] = initializeModel( paths,store )
 %UNTITLED2 Summary of this function goes here
 %   Detailed explanation goes here
     disp('Initialzing...')
@@ -10,9 +10,9 @@ function [medians] = initializeModel( paths )
     medians = train_median_filter(paths);
     
     segments = preproccess(images,medians,0);
-    
+    if(store)
     disp('Storing object pictures to be labelled...');
     storeSegments(images,segments)
-    
+    end
 end
 
