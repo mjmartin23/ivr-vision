@@ -8,7 +8,7 @@ function [ Means,Invcors,Aprioris,clusters,uni ] = train()
     %features.
     impaths = {'medianTrain/'};
     segpaths = {'training/AAA/','training/onepound/','training/twopound/','training/fivepence/','training/twentypence/','training/fiftypence/','training/washersmlhole/','training/washerlghole/','training/nut/','training/anglebracket/'};
-    m = initializeModel(impaths);
+    m = initializeModel(impaths,0);
     [trainData,~,~] = getData(segpaths,[1,0,0],m);
     clusters = trainData.clusters;
     disp('Building Model from training data...');
