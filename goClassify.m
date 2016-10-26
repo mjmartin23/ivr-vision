@@ -4,6 +4,7 @@ function [count] = goClassify(features,N,Means,Invcors,Aprioris,clusters,v)
     X=features.normal_features;
     num = size(X,1);
     count = zeros(num,N+1);
+    % loop through each subimage's features to classify
         for i= 1:num
             x=X(i,:);
             feats.surf = features.SURF_features(i);
