@@ -1,3 +1,5 @@
+% finds and returns the RGB subimages of im where each subimage is one
+% object in im
 function [ subimages ] = getColSegs(  im,segs  )
 %UNTITLED3 Summary of this function goes here
 %   Detailed explanation goes here
