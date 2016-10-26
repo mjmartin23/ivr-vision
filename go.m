@@ -28,38 +28,42 @@ function labeled = go(pathsToImages,display)
         
         % extract features for image I
         [features,empties] = extractFeats(subImages,medians);
+        fprintf('\ngot features for image %d\n',index);
+        
         subImages(empties) = [];
         count = goClassify(features,10,Means,Invcors,Aprioris,clusters,{[1:3],[4,5]});
+        fprintf('classified objects in image %d\n',index);
         
 
         % for subimage i, row i of count says which class it is
-        figure();
+        if display > 0
+            figure(3);
+        end
         num = size(subImages,2);
         sizesp = ceil(sqrt(num));
         if display > 0
-        for i = 1:num
-           class = ['class: ',classNames{find(count(i,:))}];
-           subplot(sizesp,sizesp,i),subimage(subImages{i});
-           title(class);
-        end
+            for i = 1:num
+               class = ['class: ',classNames{find(count(i,:))}];
+               subplot(sizesp,sizesp,i),subimage(subImages{i});
+               title(class);
+            end
         end
         
         moneyVec = [0,2,50,5,0,100,20,200,25,75];
         totalMoneyPence = sum(count,1)*moneyVec';
         %subplot(sizesp,sizesp+1,sizesp*(sizesp+1)),subimage(I);
-        moneyString = strcat('Total pounds in image: £ ', string(totalMoneyPence/100.0));
+        moneyString = strcat('Total money in image ',num2str(index),': £ ', string(totalMoneyPence/100.0));
         if display > 0
-        annotation('textbox', [0 0.9 1 0.1], ...
-            'String', moneyString, ...
-            'EdgeColor', 'none', ...
-            'HorizontalAlignment', 'center')
-        
-        pause();  
+            annotation('textbox', [0 0.9 1 0.1], ...
+                'String', moneyString, ...
+                'EdgeColor', 'none', ...
+                'HorizontalAlignment', 'center', ...
+                'FontSize',16)
+            disp('hit enter to continue...');
+            pause();  
         end
         
         disp(moneyString);
-                
-        fprintf('got features for image %d\n',index);
         
     end
     
