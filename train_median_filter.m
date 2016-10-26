@@ -1,7 +1,7 @@
 function [ medians ] = train_median_filter( paths )
 %UNTITLED6 Summary of this function goes here
 %   Detailed explanation goes here
-   
+   %Calculates the medians to be used in median_filter 
     files = pullFiles(paths);
     
     [numFiles,~]=size(files);
@@ -18,7 +18,6 @@ function [ medians ] = train_median_filter( paths )
         index = index + 1;
     end
     
-    medians = zeros(rows,cols,colors);
     medians = median(pixelsOverTime,4);
  
 end

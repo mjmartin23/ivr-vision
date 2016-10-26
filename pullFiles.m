@@ -1,4 +1,4 @@
-% returns filename files and paths folderNames of each file in cell array
+% returns a cell array of images and and another of their folderNames, of each image file in the cell array
 % of directories: paths
 function [ files, folderNames ] = pullFiles( paths )
     files = {};

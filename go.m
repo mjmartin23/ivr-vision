@@ -41,24 +41,32 @@ function [] = go(pathsToImages,display)
         if display > 0
             figure(3);
         end
+        
         num = size(subImages,2);
         sizesp = ceil(sqrt(num));
+        
+        %Adding class for objects which fall below probability threshold.
         classNames{end+1}='NotSure';
+        
         if display > 0
             for i = 1:num
+               %Displaying the classification of objects in the image.
                class = ['class: ',classNames{find(count(i,:))}];
                subplot(sizesp,sizesp,i),subimage(subImages{i});
                title(class);
             end
         end
-        
+        %Vector containing how much each object is worth in pence.
+        %Objects which fall below the threshold are deemed to have no
+        %value.
         moneyVec = [0,2,50,5,0,100,20,200,25,75,0];
         totalMoneyPence = sum(count,1)*moneyVec';
 
-        %subplot(sizesp,sizesp+1,sizesp*(sizesp+1)),subimage(I);
         moneyString = strcat('Total money in image ',num2str(index),': £ ', num2str(totalMoneyPence/100.0));
         disp(moneyString);
+        
         if display > 0
+            %Adding the sum total worth of the objects in the image.
             annotation('textbox', [0 0.9 1 0.1], ...
                 'String', moneyString, ...
                 'EdgeColor', 'none', ...

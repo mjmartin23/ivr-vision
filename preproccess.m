@@ -1,6 +1,6 @@
 function [ segments ] = preproccess( images,medians,display )
         
-%Filter out background using found medians. Returns 3D matrix of images
+%Filters out backgrounds using the found medians. Returns 3D matrix of binary images
     disp('Filtering out training images" backgrounds...')
     out = median_filter(images,medians);
     num = size(out,3);
