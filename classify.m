@@ -1,7 +1,7 @@
 % classifies a test feature vector v into one of N classes
 % given the class means (Means) and inverse of covariance matrices
 % (Invcors) and aprori probabilities (Aprioris)
-function [class,top3] = classify(v,N,Means,Invcors,Dim,Aprioris,feats,clusters,vec)
+function [class,top3] = classify(v,N,Means,Invcors,Dim,Aprioris,vec)
 
         evals = zeros(N,size(Means,2));
         spens = zeros(N,1);
@@ -13,44 +13,15 @@ function [class,top3] = classify(v,N,Means,Invcors,Dim,Aprioris,feats,clusters,v
             Dim = size(Means{j},2);
             IC = reshape(Invcors{j}(i,:,:),Dim,Dim);
             evals(i,j) = multivariate(v(ind),Means{j}(i,:),IC,Aprioris{j}(i));
-            end
-            surfC = clusters.surf{i};
-            s = cell2mat(feats.surf);
-            spen =0;
-            for j = 1:size(s,1)
-                spen = spen + median((sum(bsxfun(@minus,surfC,s(j,:)).^2,2)));
-            end
-            
-            spens(i) =spen;
-            
-           fastC = clusters.fast{i};
-            f = cell2mat(feats.fast);
-            fpen =0;
-            if(size(f,1)~=0)
-            for j = 1:size(f,1)  
-                fpen =fpen +min(sum(bsxfun(@minus,fastC,f(j)).^2));
-            end
-            end
-            fpens(i) =fpen;
-            
-            
+            end       
+    
         end
-        fprobs = ones(N,1)-(fpens/sum(fpens));
-        sprobs = ones(N,1)-(spens/sum(spens));
+   
         evals = prod(evals,2);
-%         [~,in3] = max(evals)
 
         evals = evals./Aprioris{1}'.^(numel(Aprioris)-1);
-%         [~,in] = max(fprobs)
-%         [~,in2] = max(sprobs)
-%         [~,in3] = max(evals)
-
-        if( sum(spens==0)~=0 &&  sum(fpens==0)~=0 )    
-        evals = (evals.*sprobs.*fprobs);
-        end
-
+        evals=evals/sum(evals);
         
-        evals = evals/sum(evals);
        
         [p,bestclasses] = max(evals);
         if(p<0.5)
@@ -62,5 +33,5 @@ function [class,top3] = classify(v,N,Means,Invcors,Dim,Aprioris,feats,clusters,v
             top3(i,:) = [j,k];
             evals(k,:) = 0;
         end
-        top3
+        
         class = bestclasses;

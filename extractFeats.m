@@ -1,24 +1,35 @@
 function [ features, empties] = extractFeats(segs,medians )
 %UNTITLED2 Summary of this function goes here
 %   Detailed explanation goes here
-    %Takes the original colored image and MxNxK 3D Binary Matrix with the
-    %segmented objects. Returns Kx10 matrix containing feature vectors of each object. 
+    %Extracts the features from the object in each subimage and stores the object's
+    %feature vector in a matrix. Each row coresponding to an object and
+    %each column to a feature.
+            
+            %Number of objects
             num = size(segs,2);
-
             
-            
-
-
+            %Initializing the 
             em=0;
+            %empties stores the indices of the subimages that have no
+            %objects in them
             empties =[];
+            
+            %Iterating through each object
             for i = 1: num
-                %Getting indices of object from binary segment matrix segs
-
+                
                 segment = segs{i};
+                
+                %Getting binary image of object to calculate the compactness and complex moments.
                 bin_segment = median_filter(segment,medians); 
+ 
+                %Checking whether the subimage has an object in it, else
+                %remove it and skip feature extraction.
                 if(numel(find(bin_segment))<20)
+                    
                     segs(i)=[];
                     empties(end+1) = (i+em);
+                    %keeping track of how many were deleted to calculate
+                    %proper index.
                     em=em+1;
                     i=i-1;
                     continue
@@ -28,30 +39,12 @@ function [ features, empties] = extractFeats(segs,medians )
                 for k = 1: size(segment,3)
                 segment(:,:,k) = (segment(:,:,k)).*bin_segment; 
                 end
-%                 imshow(uint8(segment));
-                grey_segment = rgb2gray(segment);
                 rgb_mean = reshape(mean(mean(segment,1),2),[1,3]);
+                
                 %Calculating Compactness and Complex Moments
                 complex_features =getproperties(bin_segment);
-                %Calculating FAST and SURF features;
-                SURF_points = detectSURFFeatures(grey_segment);
-                features.SURF_features{i} = extractFeatures(grey_segment,SURF_points.selectStrongest(10));
                 
-                FAST_points = extractHOGFeatures(grey_segment);
-                features.FAST_features{i} = FAST_points;
-                                %Calculating Further Features
-%                 rf=regionprops(bin_segment,'MajorAxisLength','MinorAxisLength','Extent','Solidity');
-%                 try
-%                 [ma1,ma2]= rf.MajorAxisLength;
-%                 [mi1,mi2]=rf.MinorAxisLength;
-% 
-%                 catch
-%                     ma1 = rf.MajorAxisLength;
-%                     ma2=0;
-%                     mi1=rf.MinorAxisLength;
-%                     mi2=0;
-%                 end
-                
+                %Storing features in a matrix in a structure.
                 features.normal_features(i,:) = [rgb_mean,complex_features];
                 
             end
