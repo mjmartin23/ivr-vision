@@ -213,8 +213,7 @@ The process of deciding to use this feature set relied on trial and error. We at
 
 \subsubsection{Classifier training}
 
-DYLAN - 
-
+Upon testing the multivariate gaussian classifier with all the features in the feature vector grouped together, we realized that there was not enough training data to properly approximate the covariance matrix. Thus, we then chose to approximate the distribution by using a Naive Bayes classifier instead. By assuming independence between the group of RGB means and group containing the compactness and c1 moment together, we used a multivariate gaussian distribution to approximate each of their conditional distributions and then found the class which maximised the product of their conditional probabilities and prior probabilities of the classes. Doing this the performance rose drastically.
 
 \section{Results}
 
