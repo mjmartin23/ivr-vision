@@ -301,7 +301,697 @@ Our method of background subtraction relies on a dataset where all the images ha
 
 \begin{verbatim}
 	
-	code can go here
+	FILE: go.m
+	
+	
+	% top-level function 
+	
+	function [] = go(pathsToImages,display)
+	% pathToImages : cell array of 1 or more paths to the images to be used
+	% display      : if 1 will display labeled images as they are processed
+	
+	[Means,Invcors,Aprioris,classNames] = train();
+	
+	% retrieve image from pathToImages
+	[images,~] = pullFiles(pathsToImages);
+	
+	% generate medians for median filter
+	medians = train_median_filter(pathsToImages);
+	
+	% get binary segments for each object in each image
+	allSegments = preproccess(images,medians,display);
+	
+	size(allSegments)
+	
+	% for each image I in segments, classify the objects in it
+	for index = 1 : length(allSegments)
+	
+	segments = allSegments{index};
+	
+	
+	I = images{index};
+	subImages = getColSegs(I,segments);
+	
+	% extract features for image I
+	[features,empties] = extractFeats(subImages,medians);
+	fprintf('\ngot features for image %d\n',index);
+	
+	subImages(empties) = [];
+	
+	% classify objects in I
+	count = goClassify(features,10,Means,Invcors,Aprioris,{[1:3],[4,5]});
+	fprintf('classified objects in image %d\n',index);
+	
+	
+	% for subimage i, row i of count says which class it is
+	if display > 0
+	figure(3);
+	end
+	
+	num = size(subImages,2);
+	sizesp = ceil(sqrt(num));
+	
+	%Adding class for objects which fall below probability threshold.
+	classNames{end+1}='NotSure';
+	
+	if display > 0
+	
+	for i = 1:num
+	
+	%Displaying the classification of objects in the image.
+	class = ['class: ',classNames{find(count(i,:))}];
+	subplot(sizesp,sizesp,i),subimage(subImages{i});
+	title(class);
+	
+	end
+	
+	end
+	
+	%Vector containing how much each object is worth in pence.
+	%Objects which fall below the threshold are deemed to have no
+	%value.
+	moneyVec = [0,2,50,5,0,100,20,200,25,75,0];
+	totalMoneyPence = sum(count,1)*moneyVec';
+	
+	moneyString = strcat('Total money in image ',num2str(index),': £ ', num2str(totalMoneyPence/100.0));
+	disp(moneyString);
+	
+	if display > 0
+	
+	%Adding the sum total worth of the objects in the image.
+	annotation('textbox', [0 0.9 1 0.1], ...
+	'String', moneyString, ...
+	'EdgeColor', 'none', ...
+	'HorizontalAlignment', 'center', ...
+	'Tag','deleteThis')
+	disp('hit enter to continue...');
+	pause();
+	delete(findall(gcf,'Tag','deleteThis'));
+	
+	end
+	
+	end
+	
+	end
+	
+	%%%% EOF %%%%
+	
+	
+	FILE: goClassify.m
+	
+	
+	function [count] = goClassify(features,N,Means,Invcors,Aprioris,v)
+	
+	%Getting feature matrix 
+	% classifies feature struct features based on trained data
+	% returns matrix count where count(i,c) = 1 if features(i) is of class c
+	X=features.normal_features;
+	
+	num = size(X,1);
+	count = zeros(num,N+1);
+	%Iterate through each object, classify it and add a 1 to the column of
+	%classified class.
+	
+	for i= 1:num
+	
+	x=X(i,:);
+	[c,~] = classify(x,N,Means,Invcors,0,Aprioris,v);
+	count(i,c) = 1;
+	
+	end
+	
+	end
+	
+	%%%% EOF %%%%
+	
+	
+	FILE: train.m
+	
+	
+	function [ Means,Invcors,Aprioris,uni ] = train()
+	
+	%Extract Mean vector, Invcors Matrix and priori probabilties from
+	%training images' features.
+	impaths = {'medianTrain/'};
+	segpaths = {'training/AAA/','training/onepound/','training/twopound/','training/fivepence/','training/twentypence/','training/fiftypence/','training/washersmlhole/','training/washerlghole/','training/nut/','training/anglebracket/'};
+	
+	m = initializeModel(impaths,0);
+	[trainData,~,~] = getData(segpaths,[1,0,0],m);
+	disp('Building Model from training data...');
+	
+	[X,y] = reformat(trainData.table);
+	uni=unique(y);
+	num_labels = numel(uni);
+	
+	for i =1:size(y,1)
+	n(i)=find(cellfun('length',regexp(uni,y{i})) == 1);
+	end
+	
+	V={[1:3],[4],[5]};
+	Means = cell(size(V,1),size(V,2));
+	Invcors=cell(size(V,1),size(V,2));
+	Aprioris=cell(size(V,1),size(V,2));
+	
+	for i = 1:size(V,2) 
+	v=V{i};
+	[Mean,Invcor,Apriori] = buildmodel(size(X(:,v),2),X(:,v),size(X(:,v),1),num_labels,n);
+	Means{i} = Mean;
+	Invcors{i} = Invcor;
+	Aprioris{i} = Apriori;
+	end
+	
+	end
+	
+	%%%% EOF %%%%
+	
+	
+	FILE: extractFeats.m
+	
+	
+	function [ features, empties] = extractFeats(segs,medians )
+	%UNTITLED2 Summary of this function goes here
+	%   Detailed explanation goes here
+	%Extracts the features from the object in each subimage and stores the object's
+	%feature vector in a matrix. Each row coresponding to an object and
+	%each column to a feature.
+	
+	%Number of objects
+	num = size(segs,2);
+	
+	%Initializing the 
+	em=0;
+	%empties stores the indices of the subimages that have no
+	%objects in them
+	empties =[];
+	
+	%Iterating through each object
+	for i = 1: num
+	
+	segment = segs{i};
+	
+	%Getting binary image of object to calculate the compactness and complex moments.
+	bin_segment = median_filter(segment,medians); 
+	
+	%Checking whether the subimage has an object in it, else
+	%remove it and skip feature extraction.
+	if(numel(find(bin_segment))<20)
+	
+	segs(i)=[];
+	empties(end+1) = (i+em);
+	%keeping track of how many were deleted to calculate
+	%proper index.
+	em=em+1;
+	i=i-1;
+	continue
+	end
+	%Calculating RGB means
+	segment = double(segment);
+	for k = 1: size(segment,3)
+	segment(:,:,k) = (segment(:,:,k)).*bin_segment; 
+	end
+	rgb_mean = reshape(mean(mean(segment,1),2),[1,3]);
+	
+	%Calculating Compactness and Complex Moments
+	complex_features =getproperties(bin_segment);
+	
+	%Storing features in a matrix in a structure.
+	features.normal_features(i,:) = [rgb_mean,complex_features];
+	
+	end
+	
+	end
+	
+	
+	%%%% EOF %%%%
+	
+	
+	FILE: getproperties.m
+	
+	% gets property vector for a binary shape in an image
+	% returns vector containing compactness and 6 complex moments
+	function vec = getproperties(Image)
+	
+	[H,W] = size(Image);
+	area = bwarea(Image);
+	perim = bwarea(bwperim(Image,4));
+	
+	% compactness
+	compactness = perim*perim/(4*pi*area);
+	
+	% rescale properties so all have size proportional
+	% to image size
+	%     vec = [4*sqrt(area), perim, H*compactness];
+	
+	% get scale-normalized complex central moments
+	c11 = complexmoment(Image,1,1) / (area^2);
+	c20 = complexmoment(Image,2,0) / (area^2);
+	c30 = complexmoment(Image,3,0) / (area^2.5);
+	c21 = complexmoment(Image,2,1) / (area^2.5);
+	c12 = complexmoment(Image,1,2) / (area^2.5);
+	%c=[c11,c20,c30,c21,c12]
+	
+	% get invariants, scaled to [-1,1] range
+	ci1 = real(c11);
+	ci2 = real(1000*c21*c12);
+	tmp = c20*c12*c12;
+	ci3 = 10000*real(tmp);
+	ci4 = 10000*imag(tmp);
+	tmp = c30*c12*c12*c12;
+	ci5 = 1000000*real(tmp);
+	ci6 = 1000000*imag(tmp);
+	
+	ci=[ci1,ci2,ci3,ci4,ci5,ci6];
+	
+	%     vec = [compactness,i1,i2,i3,i4,i5,i6,i7];
+	%      vec = [compactness,ci1,ci2];         %only use 3 as only have 4 samples
+	vec = [compactness,ci];
+	
+	end
+	
+	
+	%%%% EOF %%%%
+	
+	
+	FILE: train_median_filter.m
+	
+	
+	
+	function [ medians ] = train_median_filter( paths )
+	%   Returns matrix of medians generated by getting the medians of files in
+	%   paths
+	files = pullFiles(paths);
+	
+	[numFiles,~]=size(files);
+	
+	oneFileToGetSize = files{1};
+	[rows,cols,colors]=size(oneFileToGetSize);
+	
+	pixelsOverTime = zeros(rows,cols,colors,numFiles);
+	index = 1;
+	
+	for k = 1:length(files)
+	file = files{k};
+	J = file;
+	pixelsOverTime(:,:,:,index) = J(:,:,:);
+	index = index + 1;
+	end
+	
+	medians = median(pixelsOverTime,4);
+	
+	end
+	
+	%%%% EOF %%%%
+	
+	
+	FILE: initializeModel.m
+	
+	
+	% takes images in directory path and creates the model based on them
+	% stores the segmented objects if store
+	% returns the medians that were obtained 
+	function [medians] = initializeModel( paths,store )
+	
+	disp('Initialzing...')
+	%Extract image matrices and store in cell array
+	images = pullFiles(paths);
+	
+	%train median shift on images
+	disp('Calculating medians from training images...')
+	medians = train_median_filter(paths);
+	
+	segments = preproccess(images,medians,0);
+	if(store)
+	disp('Storing object pictures to be labelled...');
+	storeSegments(images,segments)
+	end
+	
+	end
+	
+	
+	%%%% EOF %%%%
+	
+	
+	FILE: getData.m
+	
+	
+	
+	% gets data from images on path and splits them into training, validation,
+	% and testing, based on the values specified in v. medians are obtained
+	% from initializeModel
+	% returns training data, validation data, and testing data
+	function [ trainData,valData,testData] = getData( paths,v,medians )
+	
+	
+	[objs,classes] = pullFiles(paths);      
+	%Extracts the feature vector for each object
+	disp('Extracting features...')
+	feats = extractFeats(objs,medians);    
+	
+	X=feats.normal_features;
+	
+	classes =classes';
+	
+	[trainInd,valInd,testInd] = dividerand(size(X,1),v(1),v(2),v(3));        
+	
+	trainData.table = table(X(trainInd,:),classes(trainInd),'VariableNames',{'Features','labels'});
+	
+	valData.table = table(X(valInd,:),classes(valInd),'VariableNames',{'Features','labels'});
+	
+	testData.table = table(X(testInd,:),classes(testInd),'VariableNames',{'Features','labels'});
+	
+	
+	
+	end
+	
+	
+	%%%% EOF %%%%
+	
+	
+	FILE: buildModel.m
+	
+	
+	
+	% build model mean feature vector (Mean) and inverse of covariance matrices
+	% (Invcors) for Numclass classes given a set of N classified (Classes) observed
+	% feature vectors (Vecs) of Dim dimension
+	function [Means,Invcors,Aprioris] = buildmodel(Dim,Vecs,N,Numclass,Classes)
+	
+	Means = zeros(Numclass,Dim);
+	Invcors = zeros(Numclass,Dim,Dim);
+	
+	for i = 1 : Numclass
+	
+	% get means for class i
+	samples = find(Classes == i);
+	M = length(samples);       % number of observations
+	
+	if M < 2
+	['Error: class ',int2str(i),' has insufficient data']
+	Means(i,:) = zeros(1,Dim);
+	Invcors(i,:,:) = zeros(Dim,Dim);
+	
+	for j = 1 : Dim
+	Invcors(i,j,j) = 1;
+	end
+	
+	else
+	classvecs = Vecs(samples,:);
+	mn = mean(classvecs);
+	Means(i,:) = mn;
+	diffs = classvecs - ones(M,1)*mn;
+	Invcors(i,:,:) = inv(diffs'*diffs/(M-1));
+	end
+	
+	Aprioris(i)=M/N;
+	
+	end
+	
+	
+	%%%% EOF %%%%
+	
+	
+	FILE: pullFiles.m
+	
+	
+	
+	% returns a cell array of images and and another of their folderNames, 
+	% of each image file in the cell array
+	% of directories: paths
+	function [ files, folderNames ] = pullFiles( paths )
+	
+	files = {};
+	folderNames ={};
+	
+	for k = 1:length(paths)
+	path = paths{k};
+	[~,attr] = fileattrib(strcat(path,'*.jpg'));
+	
+	for file = attr
+	folderName = regexp(path,'/','split');
+	name = file.Name;
+	folderNames{end+1} = folderName{end-1};
+	files{end + 1} = imread(name);      
+	  
+	end
+	
+	end
+	
+	end
+	
+	
+	%%%% EOF %%%%
+	
+	
+	FILE: preproccess.m
+	
+	
+	
+	function [ segments ] = preproccess( images,medians,display )
+	
+	%Filters out backgrounds using the found medians. Returns 3D matrix of binary images
+	disp('Filtering out training images" backgrounds...')
+	out = median_filter(images,medians);
+	num = size(out,3);
+	segments={};
+	
+	for i = 1:num
+	
+	fprintf('Segmenting image %d of %d\n',i,num);
+	if nargin > 2
+	
+	if display > 0
+	
+	figure(1);imshow(out(:,:,i));
+	title('background segmented');
+	input('hit enter to continue...')
+	
+	end
+	
+	end
+	
+	%Segment and label objects
+	[~,lbled]=boundary(out(:,:,i));
+	%Split labelled objects. Each layer is a binary image matrix
+	%containing only that object
+	fprintf('Extracting objects from image %d of %d\n\n',i,num);
+	segments{i}= extract(lbled);
+	
+	end	
+	
+	end
+	
+	%%%% EOF %%%%
+	
+	
+	FILE: median_filter.m
+	
+	
+	
+	% read in all images to filter as Is
+	% and takes in medians matrix to use as the filter
+	% returns matrix outs which has a layer for each I in Is,
+	% and it is a binary image that is the background segmentation
+	function outs = median_filter(Is,medians)
+	
+	layers = size(Is,2);
+	
+	for count = 1:layers
+	
+	if(iscell(Is))
+	I = Is{count};
+	b=false;
+	else
+	I =Is;
+	b=true;
+	end
+	
+	[rows,cols,~]=size(I);
+	I=double(I);
+	out = zeros(rows,cols);
+	diff = sum(abs(medians(1:rows,1:cols,:)-I),3);
+	out = diff>=50;
+	
+	out = bwareaopen(out,25);
+	
+	if(b)
+	outs = out;
+	break;
+	else
+	outs(:,:,count) = out;
+	
+	end
+	
+	end
+	
+	end
+	
+	
+	%%%% EOF %%%%
+	
+	
+	
+	FILE: boundary.m
+	
+	
+	
+	% connects all close objects that may have been disconnected by median
+	% filter, then returns a matrix L that has each object segmented into
+	% different colors
+	
+	function [out,L] = boundary(I)
+	SE = strel('line',10,90);
+	closed = imclose(I,SE);
+	
+	[B,L] = bwboundaries(closed,'noholes');
+	out = label2rgb(L,@jet,[.5 .5 .5]);
+	
+	end
+	
+	
+	
+	%%%% EOF %%%%
+	
+	
+	FILE: extract.m
+	
+	
+	% takes in an image generated by boundary.m and separates out the colors
+	% into binary layers, returning it as segments
+	function [ segments ] = extract( im )
+	
+	[is,js] = find(im>-1);
+	classified = im;
+	nums = max(max(classified));
+	segments= zeros(size(im,1),size(im,2),nums);
+	count =1;
+	
+	for i = 1:nums
+	newIm = zeros(size(im));
+	[inds,jnds] = find(classified == i);
+	indexs = sub2ind(size(classified),inds,jnds);
+	a = [is,js];
+	tmp = a(indexs,:);
+	indexs = sub2ind(size(classified),tmp(:,1),tmp(:,2));
+	newIm(indexs) = 1;
+	segments(:,:,count) = newIm;
+	count = count +1;
+	
+	end
+	
+	end
+	
+	
+	%%%% EOF %%%%
+	
+	
+	
+	FILE: getColSegs.m
+	
+	
+	
+	% finds and returns the RGB subimages of im where each subimage is one
+	% object in im
+	function [ subimages ] = getColSegs(  im,segs  )
+	
+	num = size(segs,3);
+	count = 1;
+	
+	for i = 1:num
+	k=5;
+	[is,js] = find(segs(:,:,i));
+	subimage = im(max((min(is)-k),1): min((max(is)+k),size(im,1)),max((min(js)-k),1):min((max(js)+k),size(im,2)),1:3);
+
+	if (size(subimage,1)*size(subimage,2)>2000)
+	subimages{count}=subimage;
+	count = count +1;
+
+	end
+
+	end
+		
+	end
+	
+	
+	%%%% EOF %%%%
+	
+	
+	
+	FILE: classifyObjects.m
+	
+	
+	
+	function [ confMatrix,prec,recall,f1_score ,top3s] = classifyObjects( X,y,classnames,N,Means,Invcors,Dim,Aprioris,v )
+	%UNTITLED Summary of this function goes here
+	%   Detailed explanation goes here
+	
+	num = size(X,1);
+	t=zeros(N+1);
+	
+	for i = 1:num
+	x = X(i,:);
+	[c,top3] = classify(x,N,Means,Invcors,Dim,Aprioris,v);
+	top3s{i} = top3;
+	t(y(i),c) = t(y(i),c)+1;
+	end
+	for i = 1:N
+	prec(i)=t(i,i)/sum(t(:,i));
+	recall(i)=t(i,i)/sum(t(i,:));
+	end
+	f1_score = 2*prec.*recall./(prec + recall);
+	classnames{end+1} = 'NotSure';
+	f1_score(isnan(f1_score))=0;
+	confMatrix= array2table(t,'VariableNames',classnames,'RowNames',classnames');
+	
+	end
+	
+	
+	%%%% EOF %%%%
+	
+	
+	
+	FILE: classify.m
+	
+	
+	
+	% classifies a test feature vector v into one of N classes
+	% given the class means (Means) and inverse of covariance matrices
+	% (Invcors) and aprori probabilities (Aprioris)
+	function [class,top3] = classify(v,N,Means,Invcors,Dim,Aprioris,vec)
+	
+	evals = zeros(N,size(Means,2));
+	for i = 1 : N
+	% We need to reshape since Invcors(i,:,:) gives 1xDimxDim matrix
+	for j = 1:size(Means,2)
+	ind = vec{j};
+	Dim = size(Means{j},2);
+	IC = reshape(Invcors{j}(i,:,:),Dim,Dim);
+	evals(i,j) = multivariate(v(ind),Means{j}(i,:),IC,Aprioris{j}(i));
+	end       
+	
+	end
+	
+	evals = prod(evals,2);
+	evals = evals./(Aprioris{1}'.^(numel(Aprioris)-1));
+	evals=evals/sum(evals);
+	
+	
+	[p,bestclasses] = max(evals);
+	if(p<0.5)
+	bestclasses=11;
+	end
+	top3 = zeros(3,2);
+	for i =1:3           
+	[j,k] = max(evals);
+	top3(i,:) = [j,k];
+	evals(k,:) = 0;
+	end
+	
+	class = bestclasses;
+	
+	end
+	
+	
+	%%%% EOF %%%%
 	
 \end{verbatim}
 

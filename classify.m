@@ -32,3 +32,4 @@ function [class,top3] = classify(v,N,Means,Invcors,Dim,Aprioris,vec)
         end
         
         class = bestclasses;
+end
