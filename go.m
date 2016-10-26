@@ -16,6 +16,8 @@ function labeled = go(pathsToImages,display)
     
     % get binary segments for each object in each image
     allSegments = preproccess(images,medians,display);
+    
+    size(allSegments)
         
     % for each image I in segments, classify the objects in it
     for index = 1 : length(allSegments)
@@ -31,6 +33,8 @@ function labeled = go(pathsToImages,display)
         fprintf('\ngot features for image %d\n',index);
         
         subImages(empties) = [];
+        
+        % classify objects in I
         count = goClassify(features,10,Means,Invcors,Aprioris,clusters,{[1:3],[4,5]});
         fprintf('classified objects in image %d\n',index);
         
@@ -58,9 +62,10 @@ function labeled = go(pathsToImages,display)
                 'String', moneyString, ...
                 'EdgeColor', 'none', ...
                 'HorizontalAlignment', 'center', ...
-                'FontSize',16)
+                'Tag','deleteThis')
             disp('hit enter to continue...');
-            pause();  
+            pause();
+            delete(findall(gcf,'Tag','deleteThis'));
         end
         
         disp(moneyString);

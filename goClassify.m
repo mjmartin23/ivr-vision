@@ -1,3 +1,5 @@
+% classifies feature struct features based on trained data
+% returns matrix count where count(i,c) = 1 if features(i) is of class c
 function [count] = goClassify(features,N,Means,Invcors,Aprioris,clusters,v)
     X=features.normal_features;
     num = size(X,1);
