@@ -8,7 +8,7 @@ for i = 1:size(v,2)
     end
 end
 [means,c,p] = train2(tr,v);
-[tab,pr,rec,f1,tp] = validate(te,tr.clusters,means,c,p,v);
+[tab,pr,rec,f1,tp] = validate(te,means,c,p,v);
 
 end
 

@@ -35,7 +35,7 @@ function labeled = go(pathsToImages,display)
         subImages(empties) = [];
  
         % classify objects in I
-        count = goClassify(features,10,Means,Invcors,Aprioris,clusters,{[1:3],[4,5]});
+        count = goClassify(features,10,Means,Invcors,Aprioris,{[1:3],[4,5]});
         fprintf('classified objects in image %d\n',index);
         
 
