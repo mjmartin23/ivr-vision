@@ -195,14 +195,14 @@ Feature selection is an extremely important stage of the classification. Choosin
 
 \begin{itemize}
 	\item Mean $r,g,b$ values
-	\item 1 complex moment ($ci1$)
-	\item SURF features
+	\item 1 complex moment (ci1)
+	%\item SURF features
 	\item Compactness
 \end{itemize}
 
 These features were calculated given a subimage of the overall image that contains only the object of interest. See Figure \ref{fig:5pencesub} for an example of a 5 pence piece that would be analyzed for these features.
 
-The process of deciding to use this feature set relied on trial and error. We attempted several other combinations as well, but achieved worse results as compared to the accuracy of these features. We tried to use simply mean $r,g,b$ values and 6 complex moments. In this instance, the extra several complex moments did not seem to improve performance, so we eliminated them. We tried adding in major axis length and minor axis length, however, this was only useful in separating out the batteries and angle brackets, which were already being classified fairly accurately. Adding in SURF features showed the biggest improvement in accuracy of prediction, and using compactness as well proved beneficial.
+The process of deciding to use this feature set relied on trial and error. We attempted several other combinations as well, but achieved worse results as compared to the accuracy of these features. We tried to use simply mean $r,g,b$ values and 6 complex moments. In this instance, the extra several complex moments did not seem to improve performance, so we eliminated them. We tried adding in major axis length and minor axis length, however, this was only useful in separating out the batteries and angle brackets, which were already being classified fairly accurately. It turned out that keeping the features as concise as possible yielded the best results.
 
 \begin{figure}
 	\centering
@@ -274,17 +274,21 @@ Overall, we are satisfied with how our classifier performs. That said, even thou
 
 \subsection{Strengths}
 
-fast
+\subsubsection{Fast}
+
+Our model performs classification very quickly. 
+
+\subsubsection{Accurate}
 
 pretty accurate
 
-invariant to background color
+\subsubsection{Conservative}
+
+By adding in the $NotSure$ class, we allowed the algorithm to decline to objects that were unclear. We believe this is a strength because it lowers the number of mis-classifications, which is better in many real world applications than trying to classify everything and having more mis-classifications.
 
 \subsection{Limitations}
 
 small training set
-
-no "unclassified" class - would probably be safer
 
 class imbalance in testing data (very few nuts and 1pound coins)
 
