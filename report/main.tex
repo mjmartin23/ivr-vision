@@ -6,7 +6,7 @@
 
 \usepackage{amssymb,amsmath,textcomp} %These are optional packages you can install which gives you more mathematical symbols to play with
 
-\usepackage{graphicx,subfig,enumerate} 
+\usepackage{graphicx,subfig,enumerate,rotating} 
 \graphicspath{{img/}}
 
 
@@ -187,7 +187,7 @@ This algorithm effectively joins up objects that are meant to be together, thus 
 
 \subsection{Classification}
 
-The classification process for 
+The classification process consisted of two main parts: feature selection and classifier training.
 
 \subsubsection{Feature selection}
 
@@ -195,14 +195,14 @@ Feature selection is an extremely important stage of the classification. Choosin
 
 \begin{itemize}
 	\item Mean $r,g,b$ values
-	\item 1 complex moment ($c1$)
+	\item 1 complex moment (c1)
 	\item SURF features
 	\item Compactness
 \end{itemize}
 
 These features were calculated given a subimage of the overall image that contains only the object of interest. See Figure \ref{fig:5pencesub} for an example of a 5 pence piece that would be analyzed for these features.
 
-The process of deciding to use this feature set relied on trial and error. We attempted several other combinations as well, but achieved worse results as compared to the accuracy of these features. We tried to use simply mean $r,g,b$ values and 6 complex moments. In this instance, the extra several complex moments did not seem to improve performance, so we eliminated them. We tried adding in major axis length and minor axis length, however, this was only useful in separating out the batteries and angle brackets, which were already being classified fairly accurately.
+The process of deciding to use this feature set relied on trial and error. We attempted several other combinations as well, but achieved worse results as compared to the accuracy of these features. We tried to use simply mean $r,g,b$ values and 6 complex moments. In this instance, the extra several complex moments did not seem to improve performance, so we eliminated them. We tried adding in major axis length and minor axis length, however, this was only useful in separating out the batteries and angle brackets, which were already being classified fairly accurately. Adding in SURF features showed the biggest improvement in accuracy of prediction, and using compactness as well proved beneficial.
 
 \begin{figure}
 	\centering
@@ -217,6 +217,35 @@ DYLAN -
 
 
 \section{Results}
+
+In order to assess the accuracy of our classification model, we split the data into a training and a testing set, giving 75\% to training and 25\% to testing. We calculated $precision$ and $recall$ values for each class. These values were calculated as follows (where $tp=TruePositives,fp=FalsePositives,fn=FalseNegatives$):
+
+\[precision=\frac{tp}{tp+fp},\hspace{5mm}recall=\frac{tp}{tp+fn}\]
+
+These two measures are widely used to assess the performance of classification models.
+
+We calculated average precision and recall across each of the ten classes in the testing data and achieved the following results: $precision=0.61,$ and $recall=0.65.$
+
+We also generated a confusion matrix from our testing data. See Table \ref{tab:conf}.
+
+\begin{sidewaystable}[]
+	\centering
+	\caption{Confusion matrix for data from testing classification}
+	\label{tab:conf}
+	\begin{tabular}{l|l|l|l|l|l|l|l|l|l|l}
+					& AAA & abracket & 50p & 5p & nut & 1pound & 20p & 2pound & washlghole & washsmhole \\ \hline
+		AAA 		& 3   & 0        & 0   & 0	& 0   & 0	   & 0   & 0      & 0          & 0          \\ \hline
+		abracket 	& 0   & 3        & 0   & 0 	& 0   & 0	   & 0   & 0      & 0          & 0          \\ \hline
+		50p 		& 0   & 0        & 1   & 0	& 0   & 0	   & 0   & 1      & 0          & 0          \\ \hline
+		5p 			& 0   & 1        & 0   & 2	& 0   & 0	   & 0   & 0      & 0          & 0          \\ \hline
+		nut 		& 0   & 2		 & 0   & 0	& 0   & 0	   & 0   & 0      & 0          & 2          \\ \hline
+		1pound 		& 0   & 0		 & 0   & 0	& 0   & 0	   & 1   & 2      & 0          & 1          \\ \hline
+		20p		 	& 0   & 0		 & 0   & 0	& 0   & 0	   & 2   & 1      & 0          & 0          \\ \hline
+		2pound 		& 0   & 0		 & 0   & 0	& 0   & 0	   & 0   & 4      & 0          & 0          \\ \hline
+		washlghole 	& 0   & 0		 & 0   & 0	& 0   & 0	   & 1   & 0      & 8          & 0          \\ \hline
+		washsmhole 	& 0   & 0		 & 0   & 0	& 1   & 0	   & 0   & 0      & 0          & 4         
+	\end{tabular}
+\end{sidewaystable}
 
 \section{Discussion}
 
