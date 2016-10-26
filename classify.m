@@ -4,8 +4,6 @@
 function [class,top3] = classify(v,N,Means,Invcors,Dim,Aprioris,vec)
 
         evals = zeros(N,size(Means,2));
-        spens = zeros(N,1);
-        fpens = zeros(N,1);
         for i = 1 : N
             % We need to reshape since Invcors(i,:,:) gives 1xDimxDim matrix
             for j = 1:size(Means,2)
@@ -18,8 +16,7 @@ function [class,top3] = classify(v,N,Means,Invcors,Dim,Aprioris,vec)
         end
    
         evals = prod(evals,2);
-
-        evals = evals./Aprioris{1}'.^(numel(Aprioris)-1);
+        evals = evals./(Aprioris{1}'.^(numel(Aprioris)-1));
         evals=evals/sum(evals);
         
        
