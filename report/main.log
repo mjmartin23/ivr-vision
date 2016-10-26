@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2016.6.19)  26 OCT 2016 16:09
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2016.6.19)  26 OCT 2016 20:30
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -438,37 +438,42 @@ Package pdftex.def Info: img/subimage.jpg used on input line 209.
  [8 <./img/subimage.jpg>]
 
 LaTeX Warning: No positions in optional float specifier.
-               Default added (so using `tbp') on input line 232.
+               Default added (so using `tbp') on input line 233.
+
+
+Overfull \hbox (55.84544pt too wide) in paragraph at lines 237--251
+ [][] 
+ []
 
 File: img/02.jpg Graphic file (type jpg)
 <use img/02.jpg>
-Package pdftex.def Info: img/02.jpg used on input line 255.
+Package pdftex.def Info: img/02.jpg used on input line 257.
 (pdftex.def)             Requested size: 124.80286pt x 93.60141pt.
  <img/median02.png, id=45, 621.82312pt x 429.85594pt>
 File: img/median02.png Graphic file (type png)
 
 <use img/median02.png>
-Package pdftex.def Info: img/median02.png used on input line 258.
+Package pdftex.def Info: img/median02.png used on input line 260.
 (pdftex.def)             Requested size: 148.2019pt x 102.44603pt.
  <img/1pound.jpg, id=46, 56.21pt x 56.21pt>
 File: img/1pound.jpg Graphic file (type jpg)
 
 <use img/1pound.jpg>
-Package pdftex.def Info: img/1pound.jpg used on input line 261.
+Package pdftex.def Info: img/1pound.jpg used on input line 263.
 (pdftex.def)             Requested size: 117.00119pt x 117.01437pt.
  <img/classified02.png, id=47, 764.10469pt x 516.42938pt>
 File: img/classified02.png Graphic file (type png)
 
 <use img/classified02.png>
-Package pdftex.def Info: img/classified02.png used on input line 265.
+Package pdftex.def Info: img/classified02.png used on input line 267.
 (pdftex.def)             Requested size: 390.0pt x 263.58826pt.
 
-Overfull \hbox (23.5057pt too wide) in paragraph at lines 255--266
+Overfull \hbox (23.5057pt too wide) in paragraph at lines 257--268
  [][][][] 
  []
 
 
-Overfull \hbox (7.83325pt too wide) in paragraph at lines 255--266
+Overfull \hbox (7.83325pt too wide) in paragraph at lines 257--268
  [] 
  []
 
@@ -481,11 +486,11 @@ LaTeX Warning: There were undefined references.
 Here is how much of TeX's memory you used:
  4269 strings out of 494953
  63017 string characters out of 6180977
- 124396 words of memory out of 5000000
+ 125396 words of memory out of 5000000
  7485 multiletter control sequences out of 15000+600000
  12909 words of font info for 50 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 44i,10n,49p,714b,365s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 44i,10n,49p,1026b,365s stack positions out of 5000i,500n,10000p,200000b,80000s
  </home/mjmartin/.texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1200.600pk></usr/
 share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/
 texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/share/texliv
@@ -493,12 +498,13 @@ e/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf
 -dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/f
 onts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/ty
 pe1/public/amsfonts/cm/cmr17.pfb></usr/share/texlive/texmf-dist/fonts/type1/pub
-lic/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/am
-sfonts/cm/cmtt12.pfb>
-Output written on main.pdf (12 pages, 395320 bytes).
+lic/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsf
+onts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/c
+m/cmtt12.pfb>
+Output written on main.pdf (12 pages, 405306 bytes).
 PDF statistics:
- 92 PDF objects out of 1000 (max. 8388607)
- 56 compressed objects within 1 object stream
+ 96 PDF objects out of 1000 (max. 8388607)
+ 59 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  61 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -1,6 +1,7 @@
+% takes images in directory path and creates the model based on them
+% stores the segmented objects if store
+% returns the medians that were obtained 
 function [medians] = initializeModel( paths,store )
-%UNTITLED2 Summary of this function goes here
-%   Detailed explanation goes here
     disp('Initialzing...')
     %Extract image matrices and store in cell array
     images = pullFiles(paths);

@@ -1,4 +1,5 @@
 % gets property vector for a binary shape in an image
+% returns vector containing compactness and 6 complex moments
 function vec = getproperties(Image)
 
      [H,W] = size(Image);
