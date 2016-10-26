@@ -1,6 +1,5 @@
+% finds and saves to a file RGB subimages of each object in the image
 function [  ] = storeSegments( ims,segments )
-%UNTITLED5 Summary of this function goes here
-%   Detailed explanation goes here
 
     for c =1:size(ims,2)
         im = ims{c};
