@@ -191,18 +191,18 @@ The classification process consisted of two main parts: feature selection and cl
 
 \subsubsection{Feature selection}
 
-Feature selection is an extremely important stage of the classification. Choosing features that allow the classifier to make clear distinctions between different objects in the image is essential to the success of the classifier. We chose to extract the following features from each object in the image for our classifier:
+Feature selection is an extremely important stage in classification. Choosing features that allow the classifier to make clear distinctions between different objects in the image is essential to the success of the classifier. We chose to extract the following features from each object in the image for our classifier:
 
 \begin{itemize}
 	\item Mean $r,g,b$ values
-	\item 1 complex moment ($ci1$)
+	\item 1 complex moment (c1)
 	\item SURF features
 	\item Compactness
 \end{itemize}
 
-These features were calculated given a subimage of the overall image that contains only the object of interest. See Figure \ref{fig:5pencesub} for an example of a 5 pence piece that would be analyzed for these features.
+These features were calculated given a subimage of the overall image that contains only the object of interest. The mean RGB values were stored along side its compactness and c1 moments  of the subimage in a feature vector.  See Figure \ref{fig:5pencesub} for an example of a 5 pence piece that would be analyzed for these features.
 
-The process of deciding to use this feature set relied on trial and error. We attempted several other combinations as well, but achieved worse results as compared to the accuracy of these features. We tried to use simply mean $r,g,b$ values and 6 complex moments. In this instance, the extra several complex moments did not seem to improve performance, so we eliminated them. We tried adding in major axis length and minor axis length, however, this was only useful in separating out the batteries and angle brackets, which were already being classified fairly accurately. Adding in SURF features showed the biggest improvement in accuracy of prediction, and using compactness as well proved beneficial.
+The process of deciding to use this feature set relied on trial and error. We attempted several other combinations as well, but achieved worse results as compared to the accuracy of these features. We tried to use simply mean $r,g,b$ values and 6 complex moments. In this instance, the extra several complex moments did not seem to improve performance, so we eliminated them. We tried adding in major axis length and minor axis length, however, this was only useful in separating out the batteries and angle brackets, which were already being classified fairly accurately.
 
 \begin{figure}
 	\centering
@@ -212,9 +212,8 @@ The process of deciding to use this feature set relied on trial and error. We at
 \end{figure}
 
 \subsubsection{Classifier training}
-
-DYLAN - 
-
+ 
+Upon testing the multivariate gaussian classifier with all the features in the feature vector grouped together, we realized that there wasn't enough training data to properly approximate the covariance matrix. Thus, we then chose to approximate the distribution by using a Naive Bayes classifier instead. By assuming independence between the group of RGB means and group containing the compactness and c1 moment together, we used a multivariate gaussian distribution to approximate each of their conditional distributions and then found the class which maximised the product of their conditional probabilities and prior probabilities of the classes. Doing this the performance rose drastically.
 
 \section{Results}
 
