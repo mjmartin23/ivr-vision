@@ -1,8 +1,4 @@
 function [ Means,Invcors,Aprioris ] = train2( trainData,V )
-%UNTITLED3 Summary of this function goes here
-%   Detailed explanatiogin goes here
-
-    %Takes 
     
     %Extract Mean vector, Invcors Matrix and priori probabilties from
     %features.

@@ -3,9 +3,9 @@
 function [] = go(pathsToImages,display)
     % pathToImages : cell array of 1 or more paths to the images to be used
     % display      : if 1 will display labeled images as they are processed
-    tic
+    
     [Means,Invcors,Aprioris,classNames] = train();
-    toc
+    
     % retrieve image from pathToImages
     [images,~] = pullFiles(pathsToImages);
     
@@ -71,6 +71,6 @@ function [] = go(pathsToImages,display)
         
         
     end
-    toc
+  
     
 end

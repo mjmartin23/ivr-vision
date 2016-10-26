@@ -1,6 +1,4 @@
 function [ segments ] = preproccess( images,medians,display )
-%UNTITLED3 Summary of this function goes here
-%   Detailed explanation goes here
         
 %Filter out background using found medians. Returns 3D matrix of images
     disp('Filtering out training images" backgrounds...')
