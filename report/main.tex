@@ -6,7 +6,7 @@
 
 \usepackage{amssymb,amsmath,textcomp} %These are optional packages you can install which gives you more mathematical symbols to play with
 
-\usepackage{graphicx,subfig,enumerate} 
+\usepackage{graphicx,subfig,enumerate,rotating} 
 \graphicspath{{img/}}
 
 
@@ -187,7 +187,7 @@ This algorithm effectively joins up objects that are meant to be together, thus 
 
 \subsection{Classification}
 
-The classification process for 
+The classification process consisted of two main parts: feature selection and classifier training.
 
 \subsubsection{Feature selection}
 
@@ -195,14 +195,14 @@ Feature selection is an extremely important stage of the classification. Choosin
 
 \begin{itemize}
 	\item Mean $r,g,b$ values
-	\item 1 complex moment ($c1$)
+	\item 1 complex moment (c1)
 	\item SURF features
 	\item Compactness
 \end{itemize}
 
 These features were calculated given a subimage of the overall image that contains only the object of interest. See Figure \ref{fig:5pencesub} for an example of a 5 pence piece that would be analyzed for these features.
 
-The process of deciding to use this feature set relied on trial and error. We attempted several other combinations as well, but achieved worse results as compared to the accuracy of these features. We tried to use simply mean $r,g,b$ values and 6 complex moments. In this instance, the extra several complex moments did not seem to improve performance, so we eliminated them. We tried adding in major axis length and minor axis length, however, this was only useful in separating out the batteries and angle brackets, which were already being classified fairly accurately.
+The process of deciding to use this feature set relied on trial and error. We attempted several other combinations as well, but achieved worse results as compared to the accuracy of these features. We tried to use simply mean $r,g,b$ values and 6 complex moments. In this instance, the extra several complex moments did not seem to improve performance, so we eliminated them. We tried adding in major axis length and minor axis length, however, this was only useful in separating out the batteries and angle brackets, which were already being classified fairly accurately. Adding in SURF features showed the biggest improvement in accuracy of prediction, and using compactness as well proved beneficial.
 
 \begin{figure}
 	\centering
@@ -218,7 +218,75 @@ DYLAN -
 
 \section{Results}
 
+In order to assess the accuracy of our classification model, we split the data into a training and a testing set, giving 75\% to training and 25\% to testing. We calculated $precision$ and $recall$ values for each class. These two measures are widely used to assess the performance of classification models and are calculated as follows (where $tp=TruePositives,fp=FalsePositives,fn=FalseNegatives$):
+
+\[precision=\frac{tp}{tp+fp},\hspace{5mm}recall=\frac{tp}{tp+fn}\]
+
+We calculated average precision and recall across each of the ten classes in the testing data and achieved the following results: 
+
+\[precision=0.61,\]
+\[recall=0.65.\]
+
+We generated a confusion matrix from our testing data. This can be seen in Table \ref{tab:conf}. Figure \ref{fig:pipeline} shows the output of our program at each stage of the process, as described in the Methods section.
+
+\begin{sidewaystable}[]
+	\centering
+	\caption{Confusion matrix for data from testing classification. Zeros were omitted for readability.}
+	\label{tab:conf}
+	\begin{tabular}{l|l|l|l|l|l|l|l|l|l|l}
+					& AAA & abracket & 50p & 5p & nut & 1pound & 20p & 2pound & washlghole & washsmhole \\ \hline
+		AAA 		& 3   &          &     & 	&     & 	   &     &        &            &            \\ \hline
+		abracket 	&     & 3        &     &  	&     & 	   &     &        &            &            \\ \hline
+		50p 		&     &          & 1   & 	&     & 	   &     & 1      &            &            \\ \hline
+		5p 			&     & 1        &     & 2	&     & 	   &     &        &            &            \\ \hline
+		nut 		&     & 2    	 &     & 	&     & 	   &     &        &            & 2          \\ \hline
+		1pound 		&     & 		 &     & 	&     & 	   & 1   & 2      &            & 1          \\ \hline
+		20p		 	&     & 		 &     & 	&     & 	   & 2   & 1      &            &            \\ \hline
+		2pound 		&     & 		 &     & 	&     & 	   &     & 4      &            &            \\ \hline
+		washlghole 	&     & 		 &     & 	&     & 	   & 1   &        & 8          &            \\ \hline
+		washsmhole 	&     & 		 &     & 	& 1   & 	   &     &        &            & 4         
+	\end{tabular}
+\end{sidewaystable}
+
+\begin{figure}
+	\centering
+	\subfloat[original image] {
+		\includegraphics[width=0.32\linewidth]{02}
+	}
+	\subfloat[background segmented] {
+		\includegraphics[width=0.38\linewidth]{median02}
+	}
+	\subfloat[object extraction] {
+		\includegraphics[width=0.3\linewidth]{1pound}
+	}
+	\hfill
+	\subfloat[classification] {
+		\includegraphics[width=\linewidth]{classified02}
+	}
+	\caption{This shows the overall pipeline of our program. The original image is segmented, objects are extracted, and then classified.}
+	\label{fig:pipeline}
+\end{figure}
+
+
 \section{Discussion}
+
+Overall, we are satisfied with how our classifier performs. That said, even though it has many strengths, it is also hindered by a few limitations.
+
+\subsection{Strengths}
+
+fast
+
+pretty accurate
+
+invariant to background color
+
+\subsection{Limitations}
+
+small training set
+
+no "unclassified" class - would probably be safer
+
+class imbalance in testing data (very few nuts and 1pound coins)
 
 \section*{Appendix}
 

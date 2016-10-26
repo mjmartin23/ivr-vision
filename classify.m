@@ -48,6 +48,7 @@ function [class,top3] = classify(v,N,Means,Invcors,Dim,Aprioris,feats,clusters,v
         if( sum(spens==0)~=0 &&  sum(fpens==0)~=0 )    
         evals = (evals.*sprobs.*fprobs);
         end
+
         
         evals = evals/sum(evals);
        
