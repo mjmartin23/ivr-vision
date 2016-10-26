@@ -12,7 +12,7 @@ function [ confTable,prec,rec,f1,tp ] = validate( valData,clusters,means,invc,pr
         n(i)=find(cellfun('length',regexp(uni,y{i})) == 1);
     end
     
-        [confTable,prec,rec,f1,tp]=classifyObjects(X,valData.feats,clusters,n,classNames,size(classNames,1),means,invc,size(X,2),priori,v);
+        [confTable,prec,rec,f1,tp]=classifyObjects(X,n,classNames,size(classNames,1),means,invc,size(X,2),priori,v);
 
 end
 

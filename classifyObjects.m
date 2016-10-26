@@ -1,4 +1,4 @@
-function [ confMatrix,prec,recall,f1_score ,top3s] = classifyObjects( X,fsfeats,clusters,y,classnames,N,Means,Invcors,Dim,Aprioris,v )
+function [ confMatrix,prec,recall,f1_score ,top3s] = classifyObjects( X,y,classnames,N,Means,Invcors,Dim,Aprioris,v )
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
     
@@ -7,9 +7,8 @@ function [ confMatrix,prec,recall,f1_score ,top3s] = classifyObjects( X,fsfeats,
     
         for i = 1:num
             x = X(i,:);
-            feats.surf = fsfeats.surf(i);
-            feats.fast = fsfeats.fast(i);
-            [c,top3] = classify(x,N,Means,Invcors,Dim,Aprioris,feats,clusters,v);
+
+            [c,top3] = classify(x,N,Means,Invcors,Dim,Aprioris,v);
             top3s{i} = top3;
             t(y(i),c) = t(y(i),c)+1;
         end
