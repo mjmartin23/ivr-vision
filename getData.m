@@ -1,6 +1,8 @@
+% gets data from images on path and splits them into training, validation,
+% and testing, based on the values specified in v. medians are obtained
+% from initializeModel
+% returns training data, validation data, and testing data
 function [ trainData,valData,testData] = getData( paths,v,medians )
-%UNTITLED2 Summary of this function goes here
-%   Detailed explanation goes here
         
         
         [objs,classes] = pullFiles(paths);      

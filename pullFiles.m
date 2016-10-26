@@ -1,6 +1,6 @@
+% returns filename files and paths folderNames of each file in cell array
+% of directories: paths
 function [ files, folderNames ] = pullFiles( paths )
-%UNTITLED7 Summary of this function goes here
-%   Detailed explanation goes here
     files = {};
     folderNames ={};
     for k = 1:length(paths)

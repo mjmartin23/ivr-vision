@@ -3,7 +3,6 @@ function [count] = goClassify(features,N,Means,Invcors,Aprioris,v)
 % classifies feature struct features based on trained data
 % returns matrix count where count(i,c) = 1 if features(i) is of class c
     X=features.normal_features;
-    
     num = size(X,1);
     count = zeros(num,N+1);
     %Iterate through each object, classify it and add a 1 to the column of

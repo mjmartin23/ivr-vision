@@ -1,11 +1,6 @@
 function [ Means,Invcors,Aprioris,uni ] = train()
-%UNTITLED3 Summary of this function goes here
-%   Detailed explanatiogin goes here
-
-    %Takes 
-    
     %Extract Mean vector, Invcors Matrix and priori probabilties from
-    %features.
+    %training images' features.
     impaths = {'medianTrain/'};
     segpaths = {'training/AAA/','training/onepound/','training/twopound/','training/fivepence/','training/twentypence/','training/fiftypence/','training/washersmlhole/','training/washerlghole/','training/nut/','training/anglebracket/'};
     m = initializeModel(impaths,0);

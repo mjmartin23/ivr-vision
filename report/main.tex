@@ -191,18 +191,18 @@ The classification process consisted of two main parts: feature selection and cl
 
 \subsubsection{Feature selection}
 
-Feature selection is an extremely important stage in classification. Choosing features that allow the classifier to make clear distinctions between different objects in the image is essential to the success of the classifier. We chose to extract the following features from each object in the image for our classifier:
+Feature selection is an extremely important stage in claification. Choosing features that allow the classifier to make clear distinctions between different objects in the image is essential to the success of the classifier. We chose to extract the following features from each object in the image for our classifier:
 
 \begin{itemize}
 	\item Mean $r,g,b$ values
-	\item 1 complex moment (c1)
-	\item SURF features
+	\item 1 complex moment (ci1)
+	%\item SURF features
 	\item Compactness
 \end{itemize}
 
-These features were calculated given a subimage of the overall image that contains only the object of interest. The mean RGB values were stored along side its compactness and c1 moments  of the subimage in a feature vector.  See Figure \ref{fig:5pencesub} for an example of a 5 pence piece that would be analyzed for these features.
+These features were calculated given a subimage of the overall image that contains only the object of interest. See Figure \ref{fig:5pencesub} for an example of a 5 pence piece that would be analyzed for these features.
 
-The process of deciding to use this feature set relied on trial and error. We attempted several other combinations as well, but achieved worse results as compared to the accuracy of these features. We tried to use simply mean $r,g,b$ values and 6 complex moments. In this instance, the extra several complex moments did not seem to improve performance, so we eliminated them. We tried adding in major axis length and minor axis length, however, this was only useful in separating out the batteries and angle brackets, which were already being classified fairly accurately.
+The process of deciding to use this feature set relied on trial and error. We attempted several other combinations as well, but achieved worse results as compared to the accuracy of these features. We tried to use simply mean $r,g,b$ values and 6 complex moments. In this instance, the extra several complex moments did not seem to improve performance, so we eliminated them. We tried adding in major axis length and minor axis length, however, this was only useful in separating out the batteries and angle brackets, which were already being classified fairly accurately. We then tried integrating SURF and FAST features into the analysis, but the low resolution of the segmented objects caused these features to have a very little influence on the overall classification. Further, the acquisition of these two features took longer than any others, so the extra computation time did not justify the minimal/lack of a benefit. It turned out that keeping the features as concise as possible yielded the best results.
 
 \begin{figure}
 	\centering
@@ -212,19 +212,20 @@ The process of deciding to use this feature set relied on trial and error. We at
 \end{figure}
 
 \subsubsection{Classifier training}
- 
-Upon testing the multivariate gaussian classifier with all the features in the feature vector grouped together, we realized that there wasn't enough training data to properly approximate the covariance matrix. Thus, we then chose to approximate the distribution by using a Naive Bayes classifier instead. By assuming independence between the group of RGB means and group containing the compactness and c1 moment together, we used a multivariate gaussian distribution to approximate each of their conditional distributions and then found the class which maximised the product of their conditional probabilities and prior probabilities of the classes. Doing this the performance rose drastically.
+
+Upon testing the multivariate gaussian classifier with all the features in the feature vector grouped together, we realized that there was not enough training data to properly approximate the covariance matrix. Thus, we then chose to approximate the distribution by using a Naive Bayes classifier instead. By assuming independence between the group of RGB means and group containing the compactness and c1 moment together, we used a multivariate gaussian distribution to approximate each of their conditional distributions and then found the class which maximised the product of their conditional probabilities and prior probabilities of the classes. Doing this the performance rose drastically.
 
 \section{Results}
 
-In order to assess the accuracy of our classification model, we split the data into a training and a testing set, giving 75\% to training and 25\% to testing. We calculated $precision$ and $recall$ values for each class. These two measures are widely used to assess the performance of classification models and are calculated as follows (where $tp=TruePositives,fp=FalsePositives,fn=FalseNegatives$):
+In order to assess the accuracy of our classification model, we split the data into a training and a testing set, giving 75\% to training and 25\% to testing. We calculated $precision$, $recall$, and $F_1$ values for each class. These two measures are widely used to assess the performance of classification models and are calculated as follows (where $tp=TruePositives,fp=FalsePositives,fn=FalseNegatives$):
 
-\[precision=\frac{tp}{tp+fp},\hspace{5mm}recall=\frac{tp}{tp+fn}\]
+\[precision=\frac{tp}{tp+fp},\hspace{5mm}recall=\frac{tp}{tp+fn},\hspace{5mm}F_1=\frac{precision*recall}{precision+recall}\]
 
 We calculated average precision and recall across each of the ten classes in the testing data and achieved the following results: 
 
-\[precision=0.61,\]
-\[recall=0.65.\]
+\[precision=0.739,\]
+\[recall=0.731,\]
+\[F_1=0.715.\]
 
 We generated a confusion matrix from our testing data. This can be seen in Table \ref{tab:conf}. Figure \ref{fig:pipeline} shows the output of our program at each stage of the process, as described in the Methods section.
 
@@ -232,18 +233,19 @@ We generated a confusion matrix from our testing data. This can be seen in Table
 	\centering
 	\caption{Confusion matrix for data from testing classification. Zeros were omitted for readability.}
 	\label{tab:conf}
-	\begin{tabular}{l|l|l|l|l|l|l|l|l|l|l}
-					& AAA & abracket & 50p & 5p & nut & 1pound & 20p & 2pound & washlghole & washsmhole \\ \hline
-		AAA 		& 3   &          &     & 	&     & 	   &     &        &            &            \\ \hline
-		abracket 	&     & 3        &     &  	&     & 	   &     &        &            &            \\ \hline
-		50p 		&     &          & 1   & 	&     & 	   &     & 1      &            &            \\ \hline
-		5p 			&     & 1        &     & 2	&     & 	   &     &        &            &            \\ \hline
-		nut 		&     & 2    	 &     & 	&     & 	   &     &        &            & 2          \\ \hline
-		1pound 		&     & 		 &     & 	&     & 	   & 1   & 2      &            & 1          \\ \hline
-		20p		 	&     & 		 &     & 	&     & 	   & 2   & 1      &            &            \\ \hline
-		2pound 		&     & 		 &     & 	&     & 	   &     & 4      &            &            \\ \hline
-		washlghole 	&     & 		 &     & 	&     & 	   & 1   &        & 8          &            \\ \hline
-		washsmhole 	&     & 		 &     & 	& 1   & 	   &     &        &            & 4         
+	\begin{tabular}{l|l|l|l|l|l|l|l|l|l|l|l}
+					& AAA & aBracket & 50p & 5p & Nut & 1Pound & 20p & 2Pound & WashLgHole & WashSmHole & NotSure \\ \hline
+		AAA 		& 2   &          &     & 	&     & 	   &     &        &            &            & 		  \\ \hline
+		aBracket 	&     & 2        &     &  	&     & 	   &     &        &            &            &		  \\ \hline
+		50p 		&     &          & 1   & 	&     & 	   & 1   &        &            &            &		  \\ \hline
+		5p 			&     &          & 1   & 3	&     & 	   &     &        &            &            &		  \\ \hline
+		Nut 		&     &      	 &     & 	& 2   & 	   &     &        &            &            &		  \\ \hline
+		1Pound 		&     & 		 &     & 	&     & 2	   &     &        &            &            &		  \\ \hline
+		20p		 	&     & 1		 &     & 	&     & 	   & 2   &        & 1          &            & 1		  \\ \hline
+		2Pound 		&     & 		 &     & 	&     & 	   & 1   & 2      &            & 1          &		  \\ \hline
+		WashLgHole 	&     & 		 &     & 	&     & 	   & 1   &        & 8          &            &		  \\ \hline
+		WashSmHole 	&     & 		 &     & 	& 2   & 	   &     &        &            & 3          &		  \\ \hline
+		NotSure 	&     & 		 &     & 	&     & 	   &     &        &            &            &		  
 	\end{tabular}
 \end{sidewaystable}
 
@@ -273,19 +275,27 @@ Overall, we are satisfied with how our classifier performs. That said, even thou
 
 \subsection{Strengths}
 
-fast
+\subsubsection{Fast}
 
-pretty accurate
+Our model performs classification very quickly, especially after the removal of SURF and FAST features. Training the model takes 2.47 seconds. Classifying images takes 1.58 seconds for 9 images, which comes to about 0.18 seconds per image classified.
 
-invariant to background color
+\subsubsection{Accurate}
+
+Our high $precision$, $recall$, and $F_1$ measures indicate the strong performance of our classifier. 
+
+\subsubsection{Conservative}
+
+By adding in the $NotSure$ class, we allowed the algorithm to decline to objects that were unclear. We believe this is a strength because it lowers the number of mis-classifications, which is better in many real world applications than trying to classify everything and having more mis-classifications.
 
 \subsection{Limitations}
 
-small training set
+\subsubsection{Training data}
 
-no "unclassified" class - would probably be safer
+One issue with our model is the amount of data used to train it. This could have been improved if we were able to capture more images of the scene, but we did not have time to do this. A larger sample size for training would undoubtedly result in better accuracy measures.
 
-class imbalance in testing data (very few nuts and 1pound coins)
+\subsubsection{Background restrictions}
+
+Our method of background subtraction relies on a dataset where all the images have the same background. If there were to be varied background in the data, then the median filter would only filter out the background pixels that happen to be at the median of the different background colors, and miss all of the others. This is not a problem for this particular project since we know all of the images have the same background, but in more general applications, the median filter would not work.
 
 \section*{Appendix}
 

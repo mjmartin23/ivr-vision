@@ -1,4 +1,7 @@
-% read in all images
+% read in all images to filter as Is
+% and takes in medians matrix to use as the filter
+% returns matrix outs which has a layer for each I in Is,
+% and it is a binary image that is the background segmentation
 function outs = median_filter(Is,medians)
     
     layers = size(Is,2);
