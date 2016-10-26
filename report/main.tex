@@ -191,18 +191,18 @@ The classification process consisted of two main parts: feature selection and cl
 
 \subsubsection{Feature selection}
 
-Feature selection is an extremely important stage of the classification. Choosing features that allow the classifier to make clear distinctions between different objects in the image is essential to the success of the classifier. We chose to extract the following features from each object in the image for our classifier:
+Feature selection is an extremely important stage in claification. Choosing features that allow the classifier to make clear distinctions between different objects in the image is essential to the success of the classifier. We chose to extract the following features from each object in the image for our classifier:
 
 \begin{itemize}
 	\item Mean $r,g,b$ values
-	\item 1 complex moment (ci1)
+mplex moment (ci1)
 	%\item SURF features
 	\item Compactness
 \end{itemize}
 
 These features were calculated given a subimage of the overall image that contains only the object of interest. See Figure \ref{fig:5pencesub} for an example of a 5 pence piece that would be analyzed for these features.
 
-The process of deciding to use this feature set relied on trial and error. We attempted several other combinations as well, but achieved worse results as compared to the accuracy of these features. We tried to use simply mean $r,g,b$ values and 6 complex moments. In this instance, the extra several complex moments did not seem to improve performance, so we eliminated them. We tried adding in major axis length and minor axis length, however, this was only useful in separating out the batteries and angle brackets, which were already being classified fairly accurately. It turned out that keeping the features as concise as possible yielded the best results.
+The process of deciding to use this feature set relied on trial and error. We attempted several other combinations as well, but achieved worse results as compared to the accuracy of these features. We tried to use simply mean $r,g,b$ values and 6 complex moments. In this instance, the extra several complex moments did not seem to improve performance, so we eliminated them. We tried adding in major axis length and minor axis length, however, this was only useful in separating out the batteries and angle brackets, which were already being classified fairly accurately. We then tried integrating SURF and FAST features into the analysis, but the low resolution of the segmented objects caused these features to have a very little influence on the overall classification. It turned out that keeping the features as concise as possible yielded the best results.
 
 \begin{figure}
 	\centering
@@ -288,7 +288,11 @@ By adding in the $NotSure$ class, we allowed the algorithm to decline to objects
 
 \subsection{Limitations}
 
+\subsubsection{Training data}
+
 small training set
+
+\subsubsection{title}
 
 class imbalance in testing data (very few nuts and 1pound coins)
 

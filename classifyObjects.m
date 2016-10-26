@@ -7,9 +7,8 @@ function [ confMatrix,prec,recall,f1_score ,top3s] = classifyObjects( X,y,classn
     
         for i = 1:num
             x = X(i,:);
-            feats.surf = fsfeats.surf(i);
-            feats.fast = fsfeats.fast(i);
-            [c,top3] = classify(x,N,Means,Invcors,Dim,Aprioris,feats,,v);
+
+            [c,top3] = classify(x,N,Means,Invcors,Dim,Aprioris,v);
             top3s{i} = top3;
             t(y(i),c) = t(y(i),c)+1;
         end

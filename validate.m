@@ -11,8 +11,7 @@ function [ confTable,prec,rec,f1,tp ] = validate( valData,means,invc,priori,v )
     for i =1:size(y,1)
         n(i)=find(cellfun('length',regexp(uni,y{i})) == 1);
     end
-    
-        [confTable,prec,rec,f1,tp]=classifyObjects(X,classNames,size(classNames,1),means,invc,size(X,2),priori,v);
+        [confTable,prec,rec,f1,tp]=classifyObjects(X,n,classNames,size(classNames,1),means,invc,size(X,2),priori,v);
 
 end
 
