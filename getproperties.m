@@ -37,4 +37,3 @@ ci=[ci1,ci2,ci3,ci4,ci5,ci6];
 %      vec = [compactness,ci1,ci2];         %only use 3 as only have 4 samples
 vec = [compactness,ci];
 
-end

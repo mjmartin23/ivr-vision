@@ -12,7 +12,7 @@ function [ Means,Invcors,Aprioris,uni ] = train()
     for i =1:size(y,1)
         n(i)=find(cellfun('length',regexp(uni,y{i})) == 1);
     end
-    V={[1:3],[4],[5]};
+    V={[1:3],[4,5]};
     Means = cell(size(V,1),size(V,2));
     Invcors=cell(size(V,1),size(V,2));
     Aprioris=cell(size(V,1),size(V,2));
