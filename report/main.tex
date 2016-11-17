@@ -60,8 +60,8 @@ All of the images are taken from a downward facing camera viewing a scene contai
 \begin{figure}
 	\centering
 	\includegraphics[width=0.75\linewidth]{02}
-	\label{fig:samplescene}
 	\caption{This is one of the test images given to train the classifier.}
+	\label{fig:samplescene}
 \end{figure}
 
 The following are the objects and associated values that may or may not be present in any given image:
@@ -95,7 +95,7 @@ This method has a few advantages. It is fast, as it only requires two passes ove
 
 \subsubsection{Adaptive thresholding}
 
-Adaptive thresholding, as opposed to naive thresholding, generates a unique threshold value for a set of sub-images inside the given image. This is meant to allow for shadows to fall on the background and still be classified as background since, the threshold is a more localized value.
+Adaptive thresholding, as opposed to naive thresholding, generates a unique threshold value for a set of sub-images inside the given image. This is meant to allow for shadows to fall on the background and still be classified as background since the threshold is a more localized value.
 
 This was a fairly successful method, but still had its share of disadvantages. Adaptive thresholding highlighted the edges around some of the objects rather than the objects themselves, but for others, identified the body of the object correctly. This inconsistency would cause problems when trying to classify the object. However, we never had any problems with background shadows when using this method. See the results in Figure \ref{fig:adapt}.
 
@@ -105,7 +105,7 @@ This algorithm is meant to reduce background shadows as well by normalizing the 
 \[r=\frac{r}{r+g+b},\hspace{5mm}g=\frac{g}{r+g+b},\hspace{5mm}b=\frac{b}{r+g+b}.\]
 Then, a tight threshold can be created based on the now very similar background values. 
 
-RGB normalization has a lot of advantages. Like adaptive thresholding, it is effective at ignoring shadows in the background. It also runs very quickly since the normalization takes advantage of Matlab's efficiency in vectorized operations, and then requires only one pass over the pixels to threshold. It produces fairly consistently good results, rarely classifying background pixels as an object. However, it often misses a couple objects in each image, which is unpredictable and would be problematic for trying to get an accurate money total for all objects in the scene. See Figure \ref{fig:norm_rgb} for an image segmented by RGB normalization.
+RGB normalization has a lot of advantages. Like adaptive thresholding, it is effective at ignoring shadows in the background. It also runs very quickly since the normalization takes advantage of Matlab's efficiency in vectorized operations, and then requires only one pass over the pixels to threshold. It produces fairly consistently good results, rarely classifying background pixels as an object. However, it often completely misses a couple objects in each image, which is unpredictable and would be problematic for trying to get an accurate money total for all objects in the scene. See Figure \ref{fig:norm_rgb} for an image segmented by RGB normalization.
 
 \subsubsection{K-means clustering}
 
@@ -215,13 +215,15 @@ The process of deciding to use this feature set relied on trial and error. We at
 
 Upon testing the multivariate gaussian classifier with all the features in the feature vector grouped together, we realized that there was not enough training data to properly approximate the covariance matrix. Thus, we then chose to approximate the distribution by using a Naive Bayes classifier instead. By assuming independence between the group of RGB means and group containing the compactness and c1 moment together, we used a multivariate gaussian distribution to approximate each of their conditional distributions and then found the class which maximised the product of their conditional probabilities and prior probabilities of the classes. Doing this the performance rose drastically.
 
+We also decided to integrate a $NotSure$ class in order to make our classifier more conservative. The purpose of this class was to allow the classifier to decline to classify an object if none of the probabilities it generated were greater than 0.5. We believe this was a prudent decision since it likely lowers the number of mis-classifications and makes the classifier safer.
+
 \section{Results}
 
-In order to assess the accuracy of our classification model, we split the data into a training and a testing set, giving 75\% to training and 25\% to testing. We calculated $precision$, $recall$, and $F_1$ values for each class. These two measures are widely used to assess the performance of classification models and are calculated as follows (where $tp=TruePositives,fp=FalsePositives,fn=FalseNegatives$):
+In order to assess the accuracy of our classification model, we split the data into a training and a testing set, giving 75\% to training and 25\% to testing. We calculated $precision$, $recall$, and $F_1$ values for each class. These measures are widely used to assess the performance of classification models and are calculated as follows (where $tp=TruePositives,fp=FalsePositives,fn=FalseNegatives$):
 
 \[precision=\frac{tp}{tp+fp},\hspace{5mm}recall=\frac{tp}{tp+fn},\hspace{5mm}F_1=\frac{precision*recall}{precision+recall}\]
 
-We calculated average precision and recall across each of the ten classes in the testing data and achieved the following results: 
+We calculated average $precision$, $recall$, and $F_1$ across each of the ten classes in the testing data and achieved the following results: 
 
 \[precision=0.739,\]
 \[recall=0.731,\]
